@@ -26,7 +26,8 @@ Page({
       this.setData({
         userInfo: app.globalData.userInfo,
         hasUserInfo: true
-      })
+      });
+      this.checkUser(this.data.userInfo);
     } else if (this.data.canIUse) {
       // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
       // 所以此处加入 callback 以防止这种情况
@@ -34,7 +35,8 @@ Page({
         this.setData({
           userInfo: res.userInfo,
           hasUserInfo: true
-        })
+        });
+        this.checkUser(this.data.userInfo);      
       }
     } else {
       // 在没有 open-type=getUserInfo 版本的兼容处理
@@ -44,9 +46,10 @@ Page({
           this.setData({
             userInfo: res.userInfo,
             hasUserInfo: true
-          })
+          });
+          this.checkUser(this.data.userInfo);  
         }
-      })
+      });
     }
 
    // get sys info
@@ -72,6 +75,41 @@ Page({
         otherStars: otherStars
       });
     });   
+  },
+  // end onLoad
+
+  // check if the user exists int the server
+  checkUser: function (userInfo) {
+    wx.request({
+      url: 'https://toupaiyule.com/users/exists/' + userInfo.nickName,
+      method: 'GET',
+      header: {
+        'content-type': 'application/json'
+      },
+      success: function (res) {
+        if(!res.data.exists){
+          // if not, create a user
+          wx.request(
+            {
+              url: 'https://toupaiyule.com/users/createUser',
+              method: 'POST',
+              data: {
+                username: userInfo.nickName,
+                avatar: userInfo.avatarUrl
+              },
+              header: {
+                'content-type': 'application/json'
+              },
+              success: function (res) {
+                console.log(res.data.msg + userInfo.nickName);          
+              }
+            });
+        }else{
+          // if yes, nothing
+          console.log('Welcome back ' + userInfo.nickName);
+        }
+      }
+    });
   },
   // api operations
   getAllStars: function (cal) {
@@ -101,15 +139,15 @@ Page({
         'content-type': 'application/json'
       },
       success: function (res) {
-        console.log(res.msg);
+        console.log(res.data.msg);
       }
     });
   },
   flowerStar: function(event){
-    console.log(event.currentTarget.dataset.name);
     wx.request({
       url: 'https://toupaiyule.com/stars/flowerStar', 
       data: {
+        username: app.globalData.userInfo.nickName,
         starname: event.currentTarget.dataset.name
       },
       method: 'POST',
@@ -117,7 +155,7 @@ Page({
         'content-type': 'application/json' 
       },
       success: function (res) {
-        console.log(res);
+        console.log(res.data.msg);
       }
     });
   },
@@ -132,7 +170,7 @@ Page({
         'content-type': 'application/json'
       },
       success: function (res) {
-        console.log(res);
+        console.log(res.data.msg);
       }
     });
   },
