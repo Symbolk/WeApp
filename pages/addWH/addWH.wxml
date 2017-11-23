@@ -1,0 +1,18 @@
+<view class="page">
+  <view class="page__hd">
+    <!-- <view class="page__title">Input</view>
+        <view class="page__desc">表单输入</view> -->
+  </view>
+  <view class="page__bd">
+    <view class="add_text">
+      <text>请输入要添加的网红名</text>
+    </view>
+    
+<view class="section">
+  <input placeholder="网红名" name="newWH_name" bindinput="newWHName" auto-focus/>
+</view>
+    <view class="add_btn">
+      <button class="weui-btn" bindtap="checkExists" type="warn">检测是否存在</button>
+    </view>
+  </view>
+</view>

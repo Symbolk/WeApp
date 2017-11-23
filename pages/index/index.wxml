@@ -20,7 +20,7 @@
     <view class="userinfo">
       <button size="mini" type="primary" wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 登陆授权 </button>
       <block wx:else>
-        <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" background-size="cover"></image>
+        <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" background-size="cover"></image>
         <!--信息框-->
         <view class="info-item">
           <text class="info-text userinfo-title">王者粉丝:</text>
@@ -44,7 +44,7 @@
         <picker bindchange="bindPickerChange" value="{{categoryIndex}}" range="{{categories}}">
           <view class="picker">
             {{categories[categoryIndex]}}
-            <image class="drop_down" src="images/drop_down.png" />
+            <image class="drop_down" src="../images/drop_down.png" />
           </view>
         </picker>
         <view class="page">
@@ -54,7 +54,7 @@
           </view>
           <view class="page__bd page__bd_spacing">
             <view class="add_star">
-              <button class="weui-btn" type="primary">添加网红</button>
+              <button class="weui-btn" bindtap="addWH" type="warn">添加网红</button>
             </view>
           </view>
         </view>
@@ -64,52 +64,61 @@
         <picker bindchange="bindPickerChange" value="{{categoryIndex}}" range="{{categories}}">
           <view class="picker">
             {{categories[categoryIndex]}}
-            <image class="drop_down" src="images/drop_down.png" />
+            <image class="drop_down" src="../images/drop_down.png" />
           </view>
         </picker>
         <!-- 前三名 -->
         <view class="top3-list">
-          <block wx:for-items="{{top3Stars}}" wx:for-item="fitem" wx:key="fitem">
+          <block wx:for-items="{{top3Stars}}" wx:for-item="item" wx:key="item">
 
-          <view wx:if="{{index == 0}}" class="rank-item">
-            <text class="rank-item-pos" style="color:#FF4040;">1</text>
-            <image class="rank-item-portrait" src="{{fitem.avatar}}" />
-            <view class="rank-item-info">
-              <text class="rank-item-info-name">{{fitem.starname}}</text>
-              <text class="rank-item-flowernum">{{fitem.flowernum}}</text>
-             </view> 
-             <view> 
-             <image data-name="{{fitem.starname}}" bindtap="flowerStar" class="iflove" src="images/love.png" />
+            <view wx:if="{{index == 0}}" class="rank-item">
+              <text class="rank-item-pos" style="color:#FF4040;">1</text>
+              <image class="rank-item-portrait" src="{{item.avatar}}" />
+              <view class="rank-item-info">
+                <text class="rank-item-info-name">{{item.starname}}</text>
+                <text class="rank-item-flowernum">{{item.flowernum}}</text>
+              </view>
+              <view wx:if="{{item.floweredToday==true}}">
+                <image data-name="{{item.starname}}" bindtap="unflowerStar" class="iflove" src="{{item.floweredToday?'../images/love.png':'../images/nolove.png'}}" />
+              </view>
+              <view wx:if="{{item.floweredToday==false||item.floweredToday==undefined}}">
+                <image data-name="{{item.starname}}" bindtap="flowerStar" class="iflove" src="{{item.floweredToday?'../images/love.png':'../images/nolove.png'}}" />
+              </view>
             </view>
-          </view>
-          <view wx:if="{{index == 1}}" class="rank-item">
-            <text class="rank-item-pos" style="color:#8470FF;">2</text>
-            <image class="rank-item-portrait" src="{{fitem.avatar}}" />
-            <view class="rank-item-info">
-              <text class="rank-item-info-name">{{fitem.starname}}</text>
-              <text class="rank-item-flowernum">{{fitem.flowernum}}</text>
+            <view wx:if="{{index == 1}}" class="rank-item">
+              <text class="rank-item-pos" style="color:#8470FF;">2</text>
+              <image class="rank-item-portrait" src="{{item.avatar}}" />
+              <view class="rank-item-info">
+                <text class="rank-item-info-name">{{item.starname}}</text>
+                <text class="rank-item-flowernum">{{item.flowernum}}</text>
+              </view>
+              <view wx:if="{{item.floweredToday==true}}">
+                <image data-name="{{item.starname}}" bindtap="unflowerStar" class="iflove" src="{{item.floweredToday?'../images/love.png':'../images/nolove.png'}}" />
+              </view>
+              <view wx:if="{{item.floweredToday==false||item.floweredToday==undefined}}">
+                <image data-name="{{item.starname}}" bindtap="flowerStar" class="iflove" src="{{item.floweredToday?'../images/love.png':'../images/nolove.png'}}" />
+                </view>
             </view>
-            <view>
-              <image class="iflove" src="images/love.png" />
+            <view wx:if="{{index == 2}}" class="rank-item">
+              <text class="rank-item-pos" style="color:#707070">3</text>
+              <image class="rank-item-portrait" src="{{item.avatar}}" />
+              <view class="rank-item-info">
+                <text class="rank-item-info-name">{{item.starname}}</text>
+                <text class="rank-item-flowernum">{{item.flowernum}}</text>
+              </view>
+              <view wx:if="{{item.floweredToday==true}}">
+                <image data-name="{{item.starname}}" bindtap="unflowerStar" class="iflove" src="{{item.floweredToday?'../images/love.png':'../images/nolove.png'}}" />
+              </view>
+              <view wx:if="{{item.floweredToday==false||item.floweredToday==undefined}}">
+                <image data-name="{{item.starname}}" bindtap="flowerStar" class="iflove" src="{{item.floweredToday?'../images/love.png':'../images/nolove.png'}}" />
+              </view>
             </view>
-          </view>
-          <view wx:if="{{index == 2}}" class="rank-item">
-            <text class="rank-item-pos" style="color:#707070">3</text>
-            <image class="rank-item-portrait" src="{{fitem.avatar}}" />
-            <view class="rank-item-info">
-              <text class="rank-item-info-name">{{fitem.starname}}</text>
-              <text class="rank-item-flowernum">{{fitem.flowernum}}</text>
-            </view>
-            <view>
-              <image class="iflove" src="images/nolove.png" />
-            </view>
-          </view>
           </block>
         </view>
         <!-- 领奖台式排序 -->
         <!-- <view class="top-1">
              <view class="user-portrait-1" style="background: url({{userInfo.avatarUrl}}) no-repeat center center;background-size: cover;">
-              <image class="user-rank-icon" src="images/img_reward_one.png" />
+              <image class="user-rank-icon" src="../images/img_reward_one.png" />
             </view>
             <view>
               <text class="user-name-1">迪丽热巴</text>
@@ -118,7 +127,7 @@
           </view>
           <view class="top-2">
              <view class="user-portrait-2" style="background: url({{userInfo.avatarUrl}}) no-repeat center center;background-size: cover;">
-              <image class="user-rank-icon" src="images/img_reward_two.png" />
+              <image class="user-rank-icon" src="../images/img_reward_two.png" />
             </view>
             <view>
               <text class="user-name-1">迪丽热巴</text>
@@ -128,7 +137,7 @@
           <view class="top-3">
           
             <view class="user-portrait-3" style="background: url({{userInfo.avatarUrl}}) no-repeat center center;background-size: cover;">
-              <image class="user-rank-icon" src="images/img_reward_three.png" />
+              <image class="user-rank-icon" src="../images/img_reward_three.png" />
             </view>
             <view>
               <text class="user-name-1">迪丽热巴</text>
@@ -138,18 +147,21 @@
         </view> -->
         <!-- 其他排行 -->
         <view class="main-rank-list">
-           <block wx:for-items="{{top3Stars}}" wx:for-item="mitem" wx:key="mitem"> 
-          <view class="rank-item">
-            <text class="rank-item-pos">{{index+4}}</text>
-            <image class="rank-item-portrait" src="{{mitem.avatar}}" />
-            <view class="rank-item-info">
-              <text class="rank-item-info-name">{{mitem.starname}}</text>
-              <text class="rank-item-flowernum">{{mitem.flowernum}}</text>
+          <block wx:for-items="{{otherStars}}" wx:for-item="item" wx:key="item">
+            <view class="rank-item">
+              <text class="rank-item-pos">{{index+4}}</text>
+              <image class="rank-item-portrait" src="{{item.avatar}}" />
+              <view class="rank-item-info">
+                <text class="rank-item-info-name">{{item.starname}}</text>
+                <text class="rank-item-flowernum">{{item.flowernum}}</text>
+              </view>
+              <view wx:if="{{item.floweredToday==true}}">
+                <image data-name="{{item.starname}}" bindtap="unflowerStar" class="iflove" src="{{item.floweredToday?'../images/love.png':'../images/nolove.png'}}" />
+              </view>
+              <view wx:if="{{item.floweredToday==false||item.floweredToday==undefined}}">
+                <image data-name="{{item.starname}}" bindtap="flowerStar" class="iflove" src="{{item.floweredToday?'../images/love.png':'../images/nolove.png'}}" />
+              </view>
             </view>
-            <view>
-              <image class="iflove" src="images/love.png" />
-            </view>
-          </view>
           </block>
         </view>
       </swiper-item>

@@ -46,6 +46,14 @@
   box-shadow: 0 -20rpx 20rpx rgba(0, 0, 0, 0.1);
 }
 
+page {
+  background-color: #f8f8f8;
+}
+
+.page__desc {
+  margin-top: 100rpx;
+}
+
 /*第一名*/
 
 .user-portrait-1 {
@@ -165,19 +173,28 @@
 }
 
 .rank-item-info {
-  margin-left: 20rpx;
+  margin-left: 50rpx;
   display: flex;
   flex-flow: column nowrap;
 }
 
-.rank-item-info-name, .picker {
+.picker {
   font-size: 28rpx;
+}
+
+.rank-item-info-name {
+  font-size: 25rpx;
+  justify-content: center;
+  width: 100rpx;
+  display: flex;
+  flex-flow: column nowrap;
 }
 
 .rank-item-flowernum {
   font-size: 32rpx;
   height: 28rpx;
-  color: #FF4040;
+  color: #ff4040;
+    display: block;
 }
 
 /* .rank-item-flowernum {
@@ -273,7 +290,7 @@
   border-style: solid;
   border-width: 8rpx;
   border-color: #fff;
-  align-self:center;
+  align-self: center;
 }
 
 .info-item {
@@ -289,15 +306,16 @@
 
 .info-text {
   font-size: 25rpx;
-  color: #EE7942;
+  color: #ee7942;
 }
-.userinfo-title, .userinfo-nickname{
+
+.userinfo-title, .userinfo-nickname {
   /* align-self: left; */
 }
 
-.userinfo-favstar,.userinfo-contribution{
+.userinfo-favstar, .userinfo-contribution {
   /* align-self: right; */
-   margin-left: 100rpx; 
+  margin-left: 100rpx;
 }
 
 .swiper-tab {
@@ -315,8 +333,8 @@
 }
 
 .on {
-  color: #FF4040;
-  border-bottom: 8rpx solid #FF4040;
+  color: #ff4040;
+  border-bottom: 8rpx solid #ff4040;
 }
 
 .swiper-box {
@@ -334,10 +352,10 @@
   width: 32rpx;
   height: 32rpx;
   border: none;
-  margin-left: 300rpx;
+  margin-left: 220rpx;
 }
 
-.drop_down{
+.drop_down {
   width: 20rpx;
   height: 20rpx;
 }
@@ -345,7 +363,7 @@
 .add_star {
   /* display: flex;
   flex-direction: column; */
-  align-items: center;  
+  align-items: center;
   position: relative;
-  margin-top: 200rpx; 
+  margin-top: 200rpx;
 }
