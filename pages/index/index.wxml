@@ -1,35 +1,35 @@
 <!-- flower_container.wxml -->
 <view class="container flower_container">
   <view class="flower-header-bg" background-size="contain" />
-  <!-- 
-    <block wx:if="{{flowerData.has_more == 0}}">
-        <text class="has-nomore-data">{{defaultLoadContent}}</text>
-    </block>
-    <block wx:if="{{flowerData.user_info}}">
-        <view class="fixed-my-container">
-            <text class="fixed-my-index">我</text>
-            <image class="fixed-my-portrait" src="{{flowerData.user_info.portrait}}"/>
-            <view class="fixed-my-info">
-                <text class="fixed-my-info-pos">{{flowerData.user_rank.rank_show}}</text>
-                <text class="fixed-my-info-beat">{{flowerData.user_rank.beat_content}}</text>
-            </view>
-            <text class="fixed-my-flowernum">{{flowerData.user_rank.flower_num_show}}</text>
-        </view>
-    </block> -->
+
   <view class="flower-list-content">
+
     <view class="userinfo">
-      <button size="mini" type="primary" wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 登陆授权 </button>
-      <block wx:else>
-        <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" background-size="cover"></image>
-        <!--信息框-->
-        <view class="info-item">
-          <text class="info-text userinfo-title">王者粉丝:</text>
-          <text class="info-text userinfo-nickname">{{userInfo.nickName}}</text>
-          <view>
-            <text class="info-text userinfo-favstar">守护明星:XXX</text>
-          </view>
+      <view class="userinfo-title">
+        <view><text class="info-text">王者粉丝:</text></view>
+        <text class="info-text">{{userInfo.nickName}}</text>
+      </view>
+      <view class="flex-view-item">
+        <button size="mini" type="primary" wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 登陆授权 </button>
+        <block wx:else>
+          <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" background-size="cover"></image>
+        </block>
+      </view>
+      <!--信息框-->
+      <view class="userinfo-favstar">
+
+        <view>
+          <text class="info-text">守护明星:</text>
+          <picker bindchange="favstarChange" value="{{favstarIndex}}" range="{{allFloweredStars}}">
+            <view class="picker info-text">
+              {{allFloweredStars[favstarIndex]}}
+              <image class="drop_down" src="../images/drop_down.png" />
+            </view>
+          </picker>
         </view>
-      </block>
+        <text class="info-text">贡献值: 600</text>
+      </view>
+
     </view>
     <!--滑动tab区域-->
     <view class="swiper-tab">
@@ -41,9 +41,9 @@
 
       <!--最热网红-->
       <swiper-item>
-        <picker bindchange="bindPickerChange" value="{{categoryIndex}}" range="{{categories}}">
+        <picker bindchange="whTypeChange" value="{{categoryIndex}}" range="{{whCategories}}">
           <view class="picker">
-            {{categories[categoryIndex]}}
+            {{whCategories[categoryIndex]}}
             <image class="drop_down" src="../images/drop_down.png" />
           </view>
         </picker>
@@ -61,9 +61,9 @@
       </swiper-item>
       <!--头牌明星-->
       <swiper-item>
-        <picker bindchange="bindPickerChange" value="{{categoryIndex}}" range="{{categories}}">
+        <picker bindchange="starTypeChange" value="{{categoryIndex}}" range="{{starCategories}}">
           <view class="picker">
-            {{categories[categoryIndex]}}
+            {{starCategories[starTypeIndex]}}
             <image class="drop_down" src="../images/drop_down.png" />
           </view>
         </picker>
@@ -97,7 +97,7 @@
               </view>
               <view wx:if="{{item.floweredToday==false||item.floweredToday==undefined}}">
                 <image data-name="{{item.starname}}" bindtap="flowerStar" class="iflove" src="{{item.floweredToday?'../images/love.png':'../images/nolove.png'}}" />
-                </view>
+              </view>
             </view>
             <view wx:if="{{index == 2}}" class="rank-item">
               <text class="rank-item-pos" style="color:#707070">3</text>

@@ -276,8 +276,9 @@ page {
 
 .userinfo {
   display: flex;
-  flex-direction: column;
-  /* align-items: center;  */
+  flex-direction: row;
+  flex-flow: row nowrap;
+  justify-content: center;  
   position: relative;
   margin-top: -80rpx;
 }
@@ -298,24 +299,26 @@ page {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
-  padding: 18rpx 60rpx;
+  /* padding: 18rpx 60rpx; */
   height: 116rpx;
   box-sizing: border-box;
   border-bottom: 4rpx solid #f6f6f6;
 }
 
 .info-text {
-  font-size: 25rpx;
-  color: #ee7942;
+  font-size: 20rpx;
+  color: #FF7F50;
 }
 
+
 .userinfo-title, .userinfo-nickname {
-  /* align-self: left; */
+  margin-top: 150rpx;
 }
 
 .userinfo-favstar, .userinfo-contribution {
   /* align-self: right; */
-  margin-left: 100rpx;
+  margin-top: 100rpx;
+  margin-left: 20rpx;
 }
 
 .swiper-tab {

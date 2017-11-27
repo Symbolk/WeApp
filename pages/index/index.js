@@ -24,14 +24,37 @@ pageObject.data = {
   winHeight: 0,
   // tab切换 
   currentTab: 1,
-  categoryIndex: 0,
-  categories: ["全部", "男明星", "女明星"],
+  starCategories: ["全部", "男明星", "女明星"],
+  starTypeIndex: 0,
+  whCategories: ["全部", "男网红", "女网红"],  
+  whTypeIndex: 0,
   floweredToday: ['gaga', '迪丽热巴'],
+  allFloweredStars: ['关晓彤'],
+  favstarIndex: 0,
   current: ''
 };
 
 
 pageObject.onLoad = function () {
+  wx.showShareMenu({
+    withShareTicket: true,
+    success: function (res) {
+      wx.showToast({
+        title: '转发成功',
+        icon: 'success',
+        duration: 2000
+      });
+    },
+    fail: function (res) {
+      wx.showToast({
+        title: '转发失败',
+        image: '../images/error.png',
+        icon: 'success',
+        duration: 2000
+      });
+    }
+  })
+  
   // get userinfo
   if (app.globalData.userInfo) {
     this.setData({
@@ -89,6 +112,12 @@ pageObject.onShareAppMessage = function(){
         icon: 'success',
         duration: 2000
       });
+      // Get the share inticket
+      wx.getShareInfo({
+        shareTicket: res.shareTickets[0],
+        success: function (res) { console.log(res) },
+        fail: function (res) { console.log(res) }
+      })
     },
     fail: function (res) {
       wx.showToast({
@@ -196,11 +225,43 @@ pageObject.loadMoreRankInfo = function (cal) {
   });
 };
 
-// get user info
-pageObject.bindPickerChange = function (e) {
+// Get different type of stars with the picker
+pageObject.starTypeChange = function (e) {
   this.setData({
     categoryIndex: e.detail.value
-  })
+  });
+  var that = this;
+  if(e.detail.value==0){
+    that.getAllStars(function (data) {
+      var top3Stars = data.slice(0, 3);
+      var otherStars = data.slice(3);
+      that.setData({
+        starsList: data,
+        top3Stars: top3Stars,
+        otherStars: otherStars
+      });
+    });
+  }else if(e.detail.value==1){
+    that.getMaleStars(function (data) {
+      var top3Stars = data.slice(0, 3);
+      var otherStars = data.slice(3);
+      that.setData({
+        starsList: data,
+        top3Stars: top3Stars,
+        otherStars: otherStars
+      });
+    });
+  }else{
+    that.getFemaleStars(function (data) {
+      var top3Stars = data.slice(0, 3);
+      var otherStars = data.slice(3);
+      that.setData({
+        starsList: data,
+        top3Stars: top3Stars,
+        otherStars: otherStars
+      });
+    });
+  }
 };
 
 
@@ -223,14 +284,13 @@ pageObject.unflowerStar = function (e) {
     },
     success: function (res) {
         wx.showToast({
-          title: e.currentTarget.dataset.name + '-1',
+          title: res.data.msg,
           icon: 'success',
           duration: 2000
         });
       if (res.data.success) {
         that.pullUpdateFlowerRankList();
       }
-      console.log(res.data.msg);
     }
   });
 },
@@ -251,14 +311,13 @@ pageObject.unflowerStar = function (e) {
       },
       success: function (res) {
         wx.showToast({
-          title: e.currentTarget.dataset.name + '+1',
+          title: res.data.msg,
           icon: 'success',
           duration: 1000
         });
         if (res.data.success) {
           that.pullUpdateFlowerRankList();
         }
-        console.log(res.data.msg);
       }
     });
   },
@@ -353,14 +412,37 @@ pageObject.getAllStars = function (cal) {
       'content-type': 'application/json'
     },
     success: function (res) {
-      // console.log(res.data);
-      // if (res && res.statusCode == 200 && res.data && res.data.code == 0) {
       if (typeof cal == 'function') {
         cal(res.data.data);
       }
-      // } else {
-      // console.log('请求失败');
-      // }
+    }
+  });
+};
+pageObject.getMaleStars = function (cal) {
+  wx.request({
+    url: 'https://toupaiyule.com/stars/getMaleStars/' + app.globalData.userInfo.nickName,
+    method: 'GET',
+    header: {
+      'content-type': 'application/json'
+    },
+    success: function (res) {
+      if (typeof cal == 'function') {
+        cal(res.data.data);
+      }
+    }
+  });
+}; 
+pageObject.getFemaleStars = function (cal) {
+  wx.request({
+    url: 'https://toupaiyule.com/stars/getFemaleStars/' + app.globalData.userInfo.nickName,
+    method: 'GET',
+    header: {
+      'content-type': 'application/json'
+    },
+    success: function (res) {
+      if (typeof cal == 'function') {
+        cal(res.data.data);
+      }
     }
   });
 };
