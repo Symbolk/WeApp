@@ -1,5 +1,9 @@
 //app.js
 App({
+  globalData: {
+    userInfo: null,
+    openid: null
+  },
   onLaunch: function () {
     // 展示本地存储能力
     var logs = wx.getStorageSync('logs') || []
@@ -10,8 +14,32 @@ App({
     wx.login({
       success: res => {
         // 发送 res.code 到后台换取 openId, sessionKey, unionId
+        var that = this;
+        wx.getUserInfo({
+          withCredentials: true,
+          success: function (resu) {
+            wx.request({
+              url: "https://xcx.toupaiyule.com/wxlogin",
+              data: {
+                code: res.code,
+                encryptedData: resu.encryptedData,
+                iv: resu.iv
+              },
+              method: 'POST',
+              header: {
+                'content-type': 'application/json'
+              },
+              success: function (res) {
+                that.globalData.openid = res.data.openid;
+                console.log(that.globalData);
+                // wx.setStorageSync('openid', res.data.openid);
+                // console.log(res.data.openid);
+              }
+            })
+          }
+        })
       }
-    })
+    });
     // 获取用户信息
     wx.getSetting({
       success: res => {
@@ -33,22 +61,60 @@ App({
       }
     })
   },
-  globalData: {
-    userInfo: null
+  getOpenid: function () {
+      wx.login({
+        success: res => {
+          // 发送 res.code 到后台换取 openId, sessionKey, unionId
+          var that = this;
+          wx.getUserInfo({
+            withCredentials: true,
+            success: function (resu) {
+              wx.request({
+                url: "https://xcx.toupaiyule.com/wxlogin",
+                data: {
+                  code: res.code,
+                  encryptedData: resu.encryptedData,
+                  iv: resu.iv
+                },
+                method: 'POST',
+                header: {
+                  'content-type': 'application/json'
+                },
+                success: function (res) {
+                  // that.globalData.openid = res.data.openid;
+                  return res.data.openid;
+                }
+              })
+            }
+          })
+        }
+      });
   },
-  onShareAppMessage: function (res) {
-    if (res.from === 'button') {
-      // 来自页面内转发按钮
-      console.log(res.target)
-    }
+  //页面事件
+  onShareAppMessage: function () {
     return {
-      title: '自定义转发标题',
-      path: '/page/user?id=123',
+      title: '头牌娱乐小程序',
+      path: '/pages/index/index',
       success: function (res) {
-        // 转发成功
+        wx.showToast({
+          title: '转发成功',
+          icon: 'success',
+          duration: 2000
+        });
+        // Get the share inticket
+        wx.getShareInfo({
+          shareTicket: res.shareTickets[0],
+          success: function (res) { console.log(res) },
+          fail: function (res) { console.log(res) }
+        })
       },
       fail: function (res) {
-        // 转发失败
+        wx.showToast({
+          title: '转发失败',
+          image: '../images/error.png',
+          icon: 'success',
+          duration: 2000
+        });
       }
     }
   }

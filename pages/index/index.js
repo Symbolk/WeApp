@@ -1,112 +1,115 @@
 //index.js
-//获取应用实例
 var util = require('../../utils/util.js');
 var app = getApp();
+const URL = "https://xcx.toupaiyule.com";
 
-// Array.prototype.contains = function (needle) {
-//   for (let i in this) {
-//     if (this[i] == needle) return true;
-//   }
-//   return false;
-// }
 
 var pageObject = {};
 pageObject.data = {
+  // star data
   starsList: [],
   top3Stars: [],
   otherStars: [],
-  defaultLoadContent: '数据已经全部加载完成.',
-  userInfo: {},
-  hasUserInfo: false,
-  canIUse: wx.canIUse('button.open-type.getUserInfo'),
-  // 页面配置  
-  winWidth: 0,
-  winHeight: 0,
-  // tab切换 
-  currentTab: 1,
   starCategories: ["全部", "男明星", "女明星"],
   starTypeIndex: 0,
-  whCategories: ["全部", "男网红", "女网红"],  
+  // wh data
+  whCategories: ["全部", "男网红", "女网红"],
   whTypeIndex: 0,
-  floweredToday: ['gaga', '迪丽热巴'],
-  allFloweredStars: ['关晓彤'],
+  // user data
+  floweredStars: [], //all ever flowered stars
   favstarIndex: 0,
-  current: ''
+
+  // current user info
+  userInfo: {},
+  openid: null,
+  hasUserInfo: false,
+  canIUse: wx.canIUse('button.open-type.getUserInfo'),
+  // page
+  winWidth: 0,
+  winHeight: 0,
+  // tab switch
+  currentTab: 1,
+  current: '',
+  // tips info
+  defaultLoadContent: '数据已经全部加载完成.'
 };
 
+  pageObject.onLoad = function () {
+    // wx.showShareMenu({
+    //   withShareTicket: true,
+    //   success: function (res) {
+    //     wx.showToast({
+    //       title: '转发成功',
+    //       icon: 'success',
+    //       duration: 2000
+    //     });
+    //   },
+    //   fail: function (res) {
+    //     wx.showToast({
+    //       title: '转发失败',
+    //       image: '../images/error.png',
+    //       icon: 'success',
+    //       duration: 2000
+    //     });
+    //   }
+    // })
 
-pageObject.onLoad = function () {
-  wx.showShareMenu({
-    withShareTicket: true,
-    success: function (res) {
-      wx.showToast({
-        title: '转发成功',
-        icon: 'success',
-        duration: 2000
-      });
-    },
-    fail: function (res) {
-      wx.showToast({
-        title: '转发失败',
-        image: '../images/error.png',
-        icon: 'success',
-        duration: 2000
-      });
-    }
-  })
-  
-  // get userinfo
-  if (app.globalData.userInfo) {
-    this.setData({
-      userInfo: app.globalData.userInfo,
-      hasUserInfo: true
-    });
-    this.checkUser(this.data.userInfo);
-  } else if (this.data.canIUse) {
-    // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
-    // 所以此处加入 callback 以防止这种情况
-    app.userInfoReadyCallback = res => {
+    // if(this.data.openid==null){
+      getApp().getOpenid(function(openid){
+        console.log(openid);
+      })
+    // }
+    // get userinfo
+    if (app.globalData.userInfo) {
       this.setData({
-        userInfo: res.userInfo,
+        userInfo: app.globalData.userInfo,
         hasUserInfo: true
       });
       this.checkUser(this.data.userInfo);
-    }
-  } else {
-    // 在没有 open-type=getUserInfo 版本的兼容处理
-    wx.getUserInfo({
-      success: res => {
-        app.globalData.userInfo = res.userInfo
+    } else if (this.data.canIUse) {
+      // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
+      // 所以此处加入 callback 以防止这种情况
+      app.userInfoReadyCallback = res => {
         this.setData({
           userInfo: res.userInfo,
           hasUserInfo: true
         });
         this.checkUser(this.data.userInfo);
       }
-    });
-  }
-
-
-  // get sys info
-  var that = this;
-  // 获取系统信息 
-  wx.getSystemInfo({
-    success: function (res) {
-      that.setData({
-        winWidth: res.windowWidth,
-        winHeight: res.windowHeight
+    } else {
+      // 在没有 open-type=getUserInfo 版本的兼容处理
+      wx.getUserInfo({
+        success: res => {
+          app.globalData.userInfo = res.userInfo
+          this.setData({
+            userInfo: res.userInfo,
+            hasUserInfo: true
+          });
+          this.checkUser(this.data.userInfo);
+        }
       });
     }
-  });
-};
+
+    // get sys info
+    var that = this;
+    // 获取系统信息 
+    wx.getSystemInfo({
+      success: function (res) {
+        that.setData({
+          winWidth: res.windowWidth,
+          winHeight: res.windowHeight
+        });
+      }
+    });
+  };
 // end onLoad
 
-//页面事件
-pageObject.onShareAppMessage = function(){
-  return{
+// page actions
+pageObject.onShareAppMessage= function () {
+  return {
     title: '头牌娱乐小程序',
     path: '/pages/index/index',
-    success: function(res){
+    success: function (res) {
       wx.showToast({
         title: '转发成功',
         icon: 'success',
@@ -129,24 +132,23 @@ pageObject.onShareAppMessage = function(){
     }
   }
 },
-
-pageObject.getUserInfo = function (e) {
-  app.globalData.userInfo = e.detail.userInfo;
-  this.setData({
-    userInfo: e.detail.userInfo,
-    hasUserInfo: true
-  });
-  var that = this;
-  that.getAllStars(function (data) {
-    var top3Stars = data.slice(0, 3);
-    var otherStars = data.slice(3);
-    that.setData({
-      starsList: data,
-      top3Stars: top3Stars,
-      otherStars: otherStars
+  pageObject.getUserInfo = function (e) {
+    app.globalData.userInfo = e.detail.userInfo;
+    this.setData({
+      userInfo: e.detail.userInfo,
+      hasUserInfo: true
     });
-  });
-};
+    var that = this;
+    that.getAllStars(function (data) {
+      var top3Stars = data.slice(0, 3);
+      var otherStars = data.slice(3);
+      that.setData({
+        starsList: data,
+        top3Stars: top3Stars,
+        otherStars: otherStars
+      });
+    });
+  };
 // 滑动切换tab 
 pageObject.bindChange = function (e) {
   var that = this;
@@ -231,7 +233,7 @@ pageObject.starTypeChange = function (e) {
     categoryIndex: e.detail.value
   });
   var that = this;
-  if(e.detail.value==0){
+  if (e.detail.value == 0) {
     that.getAllStars(function (data) {
       var top3Stars = data.slice(0, 3);
       var otherStars = data.slice(3);
@@ -241,7 +243,7 @@ pageObject.starTypeChange = function (e) {
         otherStars: otherStars
       });
     });
-  }else if(e.detail.value==1){
+  } else if (e.detail.value == 1) {
     that.getMaleStars(function (data) {
       var top3Stars = data.slice(0, 3);
       var otherStars = data.slice(3);
@@ -251,7 +253,7 @@ pageObject.starTypeChange = function (e) {
         otherStars: otherStars
       });
     });
-  }else{
+  } else {
     that.getFemaleStars(function (data) {
       var top3Stars = data.slice(0, 3);
       var otherStars = data.slice(3);
@@ -268,12 +270,12 @@ pageObject.starTypeChange = function (e) {
 // STAR事件
 // run after the user log in to the app
 pageObject.unflowerStar = function (e) {
-  var that=this;
+  var that = this;
   this.setData({
     current: e.currentTarget.dataset.name
   });
   wx.request({
-    url: 'https://toupaiyule.com/stars/unflowerStar',
+    url: '/stars/unflowerStar',
     data: {
       username: app.globalData.userInfo.nickName,
       starname: e.currentTarget.dataset.name
@@ -283,11 +285,11 @@ pageObject.unflowerStar = function (e) {
       'content-type': 'application/json'
     },
     success: function (res) {
-        wx.showToast({
-          title: res.data.msg,
-          icon: 'success',
-          duration: 2000
-        });
+      wx.showToast({
+        title: res.data.msg,
+        icon: 'success',
+        duration: 2000
+      });
       if (res.data.success) {
         that.pullUpdateFlowerRankList();
       }
@@ -295,12 +297,12 @@ pageObject.unflowerStar = function (e) {
   });
 },
   pageObject.flowerStar = function (e) {
-    var that=this;
+    var that = this;
     this.setData({
       current: e.currentTarget.dataset.name
     });
     wx.request({
-      url: 'https://toupaiyule.com/stars/flowerStar',
+      url: URL + '/stars/flowerStar',
       data: {
         username: app.globalData.userInfo.nickName,
         starname: e.currentTarget.dataset.name
@@ -323,8 +325,9 @@ pageObject.unflowerStar = function (e) {
   },
 
   pageObject.checkUser = function (userInfo) {
+  console.log(this.data.openid);
     wx.request({
-      url: 'https://toupaiyule.com/users/exists/' + userInfo.nickName,
+      url: URL + '/users/exists/' + userInfo.nickName,
       method: 'GET',
       header: {
         'content-type': 'application/json'
@@ -334,7 +337,7 @@ pageObject.unflowerStar = function (e) {
           // if not, create a user
           wx.request(
             {
-              url: 'https://toupaiyule.com/users/createUser',
+              url: URL + '/users/createUser',
               method: 'POST',
               data: {
                 username: userInfo.nickName,
@@ -358,39 +361,6 @@ pageObject.unflowerStar = function (e) {
         }
       }
     });
-    // get flowered stars by the user
-    // var that = this;
-    // wx.request({
-    //   url: 'https://toupaiyule.com/users/floweredToday/' + app.globalData.userInfo.nickName,
-    //   method: 'GET',
-    //   header: {
-    //     'content-type': 'application/json'
-    //   },
-    //   success: function (res) {
-    //     let temp = new Array();
-    //     for (let d of res.data) {
-    //       temp.push(d.starname);
-    //     }
-    //     // that.setData({
-    //     //   floweredToday: temp
-    //     // });
-    //     // add flowered flag for every star
-    //     for (let s of that.data.top3Stars) {
-    //       for (let fs of temp) {
-    //         if (s.starname == fs) {
-    //           s.floweredToday = true;
-    //         }
-    //       }
-    //     }
-    //     for (let s of that.data.otherStars) {
-    //       for (let fs of temp) {
-    //         if (s.starname == fs) {
-    //           s.floweredToday = true;
-    //         }
-    //       }
-    //     }
-    //   }
-    // });
     // get all stars
     var that = this;
     that.getAllStars(function (data) {
@@ -405,8 +375,24 @@ pageObject.unflowerStar = function (e) {
   };
 // api operations
 pageObject.getAllStars = function (cal) {
+  if (app.globalData.userInfo!=null) {
+    wx.request({
+      url: URL + '/stars/getAllStars/' + app.globalData.userInfo.nickName,
+      method: 'GET',
+      header: {
+        'content-type': 'application/json'
+      },
+      success: function (res) {
+        if (typeof cal == 'function') {
+          cal(res.data.data);
+        }
+      }
+    });
+  }
+};
+pageObject.getMaleStars = function (cal) {
   wx.request({
-    url: 'https://toupaiyule.com/stars/getAllStars/' + app.globalData.userInfo.nickName,
+    url: URL + '/stars/getMaleStars/' + app.globalData.userInfo.nickName,
     method: 'GET',
     header: {
       'content-type': 'application/json'
@@ -418,23 +404,9 @@ pageObject.getAllStars = function (cal) {
     }
   });
 };
-pageObject.getMaleStars = function (cal) {
-  wx.request({
-    url: 'https://toupaiyule.com/stars/getMaleStars/' + app.globalData.userInfo.nickName,
-    method: 'GET',
-    header: {
-      'content-type': 'application/json'
-    },
-    success: function (res) {
-      if (typeof cal == 'function') {
-        cal(res.data.data);
-      }
-    }
-  });
-}; 
 pageObject.getFemaleStars = function (cal) {
   wx.request({
-    url: 'https://toupaiyule.com/stars/getFemaleStars/' + app.globalData.userInfo.nickName,
+    url: URL + '/stars/getFemaleStars/' + app.globalData.userInfo.nickName,
     method: 'GET',
     header: {
       'content-type': 'application/json'
@@ -449,7 +421,7 @@ pageObject.getFemaleStars = function (cal) {
 
 pageObject.init = function () {
   wx.request({
-    url: 'https://toupaiyule.com/stars/init',
+    url: URL + '/stars/init',
     method: 'GET',
     header: {
       'content-type': 'application/json'
