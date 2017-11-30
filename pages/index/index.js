@@ -18,7 +18,8 @@ pageObject.data = {
   // user data
   floweredStars: [], //all ever flowered stars
   favstarIndex: 0,
-
+  usersList: [],
+  
   // current user info
   userInfo: {},
   openid: null,
@@ -29,7 +30,6 @@ pageObject.data = {
   winHeight: 0,
   // tab switch
   currentTab: 1,
-  current: '',
   // tips info
   defaultLoadContent: '数据已经全部加载完成.'
 };
@@ -54,18 +54,13 @@ pageObject.data = {
     //   }
     // })
 
-    // if(this.data.openid==null){
-      getApp().getOpenid(function(openid){
-        console.log(openid);
-      })
-    // }
     // get userinfo
     if (app.globalData.userInfo) {
       this.setData({
         userInfo: app.globalData.userInfo,
         hasUserInfo: true
       });
-      this.checkUser(this.data.userInfo);
+      // this.checkUser(this.data.userInfo);
     } else if (this.data.canIUse) {
       // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
       // 所以此处加入 callback 以防止这种情况
@@ -74,7 +69,7 @@ pageObject.data = {
           userInfo: res.userInfo,
           hasUserInfo: true
         });
-        this.checkUser(this.data.userInfo);
+        // this.checkUser(this.data.userInfo);
       }
     } else {
       // 在没有 open-type=getUserInfo 版本的兼容处理
@@ -85,7 +80,7 @@ pageObject.data = {
             userInfo: res.userInfo,
             hasUserInfo: true
           });
-          this.checkUser(this.data.userInfo);
+          // this.checkUser(this.data.userInfo);
         }
       });
     }
@@ -101,6 +96,15 @@ pageObject.data = {
         });
       }
     });
+  if(that.data.openid==null){
+    app.getOpenid(function (openid) {
+      that.setData({
+        openid: openid
+      });
+      that.checkUser(that.data.userInfo);
+    });
+  }
+
   };
 // end onLoad
 
@@ -132,23 +136,7 @@ pageObject.onShareAppMessage= function () {
     }
   }
 },
-  pageObject.getUserInfo = function (e) {
-    app.globalData.userInfo = e.detail.userInfo;
-    this.setData({
-      userInfo: e.detail.userInfo,
-      hasUserInfo: true
-    });
-    var that = this;
-    that.getAllStars(function (data) {
-      var top3Stars = data.slice(0, 3);
-      var otherStars = data.slice(3);
-      that.setData({
-        starsList: data,
-        top3Stars: top3Stars,
-        otherStars: otherStars
-      });
-    });
-  };
+
 // 滑动切换tab 
 pageObject.bindChange = function (e) {
   var that = this;
@@ -227,6 +215,45 @@ pageObject.loadMoreRankInfo = function (cal) {
   });
 };
 
+// User operations
+pageObject.getUserInfo = function (e) {
+  app.globalData.userInfo = e.detail.userInfo;
+  this.setData({
+    userInfo: e.detail.userInfo,
+    hasUserInfo: true
+  });
+  var that = this;
+  that.getAllStars(function (data) {
+    var top3Stars = data.slice(0, 3);
+    var otherStars = data.slice(3);
+    that.setData({
+      starsList: data,
+      top3Stars: top3Stars,
+      otherStars: otherStars
+    });
+  });
+};
+
+pageObject.getAllUsers=function (cal){
+  if (app.globalData.userInfo != null) {
+    wx.request({
+      url: URL + '/users/getAllUsers/',
+      method: 'GET',
+      header: {
+        'content-type': 'application/json'
+      },
+      success: function (res) {    
+        if (typeof cal == 'function') {
+          cal(res.data.data);
+        }
+      }
+    });
+  }
+};
+
+
+// Star operations
+// run after the user log in to the app
 // Get different type of stars with the picker
 pageObject.starTypeChange = function (e) {
   this.setData({
@@ -266,17 +293,12 @@ pageObject.starTypeChange = function (e) {
   }
 };
 
-
-// STAR事件
-// run after the user log in to the app
 pageObject.unflowerStar = function (e) {
   var that = this;
-  this.setData({
-    current: e.currentTarget.dataset.name
-  });
   wx.request({
-    url: '/stars/unflowerStar',
+    url: URL + '/stars/unflowerStar',
     data: {
+      openid: app.globalData.openid,
       username: app.globalData.userInfo.nickName,
       starname: e.currentTarget.dataset.name
     },
@@ -298,12 +320,10 @@ pageObject.unflowerStar = function (e) {
 },
   pageObject.flowerStar = function (e) {
     var that = this;
-    this.setData({
-      current: e.currentTarget.dataset.name
-    });
     wx.request({
       url: URL + '/stars/flowerStar',
       data: {
+        openid: app.globalData.openid,
         username: app.globalData.userInfo.nickName,
         starname: e.currentTarget.dataset.name
       },
@@ -325,9 +345,10 @@ pageObject.unflowerStar = function (e) {
   },
 
   pageObject.checkUser = function (userInfo) {
-  console.log(this.data.openid);
+  var that = this;
+  var oid=that.data.openid;
     wx.request({
-      url: URL + '/users/exists/' + userInfo.nickName,
+      url: URL + '/users/exists/' + oid,
       method: 'GET',
       header: {
         'content-type': 'application/json'
@@ -340,6 +361,7 @@ pageObject.unflowerStar = function (e) {
               url: URL + '/users/createUser',
               method: 'POST',
               data: {
+                openid: oid,
                 username: userInfo.nickName,
                 avatar: userInfo.avatarUrl
               },
@@ -347,10 +369,27 @@ pageObject.unflowerStar = function (e) {
                 'content-type': 'application/json'
               },
               success: function (res) {
-                console.log(res.data.msg + userInfo.nickName);
+                console.log(res.data.msg);
+                // get all stars
+
+                that.getAllStars(function (data) {
+                  var top3Stars = data.slice(0, 3);
+                  var otherStars = data.slice(3);
+                  that.setData({
+                    starsList: data,
+                    top3Stars: top3Stars,
+                    otherStars: otherStars
+                  });
+                });
+                that.getAllUsers(function (data) {
+                  that.setData({
+                    usersList: data
+                  });
+                });
               }
             });
         } else {
+          
           // if yes, nothing
           wx.showToast({
             title: 'Welcome back!',
@@ -358,26 +397,31 @@ pageObject.unflowerStar = function (e) {
             duration: 1000
           });
           console.log('Welcome back ' + userInfo.nickName);
+          // get all stars
+          that.getAllUsers(function (data) {
+            that.setData({
+              usersList: data
+            });
+          });
+          that.getAllStars(function (data) {
+            var top3Stars = data.slice(0, 3);
+            var otherStars = data.slice(3);
+            that.setData({
+              starsList: data,
+              top3Stars: top3Stars,
+              otherStars: otherStars
+            });
+          });
         }
       }
     });
-    // get all stars
-    var that = this;
-    that.getAllStars(function (data) {
-      var top3Stars = data.slice(0, 3);
-      var otherStars = data.slice(3);
-      that.setData({
-        starsList: data,
-        top3Stars: top3Stars,
-        otherStars: otherStars
-      });
-    });
+
   };
-// api operations
+
 pageObject.getAllStars = function (cal) {
   if (app.globalData.userInfo!=null) {
     wx.request({
-      url: URL + '/stars/getAllStars/' + app.globalData.userInfo.nickName,
+      url: URL + '/stars/getAllStars/' + app.globalData.openid,
       method: 'GET',
       header: {
         'content-type': 'application/json'
@@ -392,7 +436,7 @@ pageObject.getAllStars = function (cal) {
 };
 pageObject.getMaleStars = function (cal) {
   wx.request({
-    url: URL + '/stars/getMaleStars/' + app.globalData.userInfo.nickName,
+    url: URL + '/stars/getMaleStars/' + app.globalData.openid,
     method: 'GET',
     header: {
       'content-type': 'application/json'
@@ -406,7 +450,7 @@ pageObject.getMaleStars = function (cal) {
 };
 pageObject.getFemaleStars = function (cal) {
   wx.request({
-    url: URL + '/stars/getFemaleStars/' + app.globalData.userInfo.nickName,
+    url: URL + '/stars/getFemaleStars/' + app.globalData.openid,
     method: 'GET',
     header: {
       'content-type': 'application/json'
@@ -419,22 +463,21 @@ pageObject.getFemaleStars = function (cal) {
   });
 };
 
-pageObject.init = function () {
-  wx.request({
-    url: URL + '/stars/init',
-    method: 'GET',
-    header: {
-      'content-type': 'application/json'
-    },
-    success: function (res) {
-      console.log(res.data.msg);
-    }
-  });
-}
+// pageObject.init = function () {
+//   wx.request({
+//     url: URL + '/stars/init',
+//     method: 'GET',
+//     header: {
+//       'content-type': 'application/json'
+//     },
+//     success: function (res) {
+//       console.log(res.data.msg);
+//     }
+//   });
+// }
 
 
-
-// 网红事件
+// WH operations
 pageObject.addWH = function (e) {
   wx.navigateTo({
     url: '../addWH/addWH'

@@ -10,36 +10,6 @@ App({
     logs.unshift(Date.now())
     wx.setStorageSync('logs', logs)
 
-    // 登录
-    wx.login({
-      success: res => {
-        // 发送 res.code 到后台换取 openId, sessionKey, unionId
-        var that = this;
-        wx.getUserInfo({
-          withCredentials: true,
-          success: function (resu) {
-            wx.request({
-              url: "https://xcx.toupaiyule.com/wxlogin",
-              data: {
-                code: res.code,
-                encryptedData: resu.encryptedData,
-                iv: resu.iv
-              },
-              method: 'POST',
-              header: {
-                'content-type': 'application/json'
-              },
-              success: function (res) {
-                that.globalData.openid = res.data.openid;
-                console.log(that.globalData);
-                // wx.setStorageSync('openid', res.data.openid);
-                // console.log(res.data.openid);
-              }
-            })
-          }
-        })
-      }
-    });
     // 获取用户信息
     wx.getSetting({
       success: res => {
@@ -61,11 +31,14 @@ App({
       }
     })
   },
-  getOpenid: function () {
+  getOpenid: function (cb) {
+    var that = this
+    if (this.globalData.openid) {
+      typeof cb == "function" && cb(this.globalData.openid)
+    } else {
       wx.login({
         success: res => {
           // 发送 res.code 到后台换取 openId, sessionKey, unionId
-          var that = this;
           wx.getUserInfo({
             withCredentials: true,
             success: function (resu) {
@@ -81,14 +54,16 @@ App({
                   'content-type': 'application/json'
                 },
                 success: function (res) {
-                  // that.globalData.openid = res.data.openid;
-                  return res.data.openid;
+                  that.globalData.openid = res.data.openid;
+                  // return res.data.openid;
+                  typeof cb == "function" && cb(that.globalData.openid)                  
                 }
               })
             }
           })
         }
       });
+    }
   },
   //页面事件
   onShareAppMessage: function () {

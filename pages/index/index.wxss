@@ -185,15 +185,25 @@ page {
 .rank-item-info-name {
   font-size: 25rpx;
   justify-content: center;
-  width: 100rpx;
+  width: 150rpx;
   display: flex;
   flex-flow: column nowrap;
 }
+ .rank-item-info-title {
+  /* height: 32rpx;
+  border: none; */
+  margin-left: 150rpx;
+  font-size: 25rpx;
+  justify-content: center;
+  width: 100rpx;
+  display: flex;
+  flex-flow: column nowrap;
+} 
 
 .rank-item-flowernum {
   font-size: 32rpx;
   height: 28rpx;
-  color: #ff4040;
+  color: #FF8C00;
     display: block;
 }
 

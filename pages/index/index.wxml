@@ -6,7 +6,9 @@
 
     <view class="userinfo">
       <view class="userinfo-title">
-        <view><text class="info-text">王者粉丝:</text></view>
+        <view>
+          <text class="info-text">王者粉丝:</text>
+        </view>
         <text class="info-text">{{userInfo.nickName}}</text>
       </view>
       <view class="flex-view-item">
@@ -167,7 +169,35 @@
       </swiper-item>
       <!--贡献排行-->
       <swiper-item>
-        <view>Seside3</view>
+        <view class="main-rank-list">
+          <block wx:for-items="{{usersList}}" wx:for-item="item" wx:key="item">
+            <view class="rank-item">
+              <block wx:if="{{index == 0}}" class="rank-item">
+                <text class="rank-item-pos" style="color:#FF4040;">1</text>
+              </block>
+              <block wx:elif="{{index == 1}}" class="rank-item">
+                <text class="rank-item-pos" style="color:#8470FF;">2</text>
+              </block>
+              <block wx:elif="{{index == 2}}" class="rank-item">
+                <text class="rank-item-pos" style="color:#707070;">3</text>
+              </block>
+              <block wx:else class="rank-item">
+                <text class="rank-item-pos">{{index+1}}</text>
+              </block>
+              <image class="rank-item-portrait" src="{{item.avatar}}" />
+              <view class="rank-item-info">
+                <view wx:if="{{item.openid==openid}}">
+                  <text class="rank-item-info-name" style="color:red;">{{item.username}}</text>
+                </view>
+                <view wx:else>
+                  <text class="rank-item-info-name">{{item.username}}</text>
+                </view>
+                <text class="rank-item-flowernum">{{item.sumContribution}}</text>
+              </view>
+                <text class="rank-item-info-title">{{item.title}}</text>        
+            </view>
+          </block>
+        </view>
       </swiper-item>
     </swiper>
 
