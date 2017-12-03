@@ -12,9 +12,12 @@ pageObject.data = {
   otherStars: [],
   starCategories: ["全部", "男明星", "女明星"],
   starTypeIndex: 0,
+  everStars: [],
   // wh data
   whCategories: ["全部", "男网红", "女网红"],
   whTypeIndex: 0,
+  whsList: [],
+  numWH: 0, 
   // user data
   floweredStars: [], //all ever flowered stars
   favstarIndex: 0,
@@ -168,6 +171,17 @@ pageObject.pullUpdateFlowerRankList = function () {
       top3Stars: top3Stars,
       otherStars: otherStars
     });
+    that.getAllUsers(function (data) {
+      that.setData({
+        usersList: data
+      });
+    });
+    that.getAllWHs(function (data, num) {
+      that.setData({
+        numWH: num,
+        whsList: data
+      });
+    });
     wx.stopPullDownRefresh();
     setTimeout(function () {
       wx.hideNavigationBarLoading();
@@ -257,7 +271,7 @@ pageObject.getAllUsers=function (cal){
 // Get different type of stars with the picker
 pageObject.starTypeChange = function (e) {
   this.setData({
-    categoryIndex: e.detail.value
+    starTypeIndex: e.detail.value
   });
   var that = this;
   if (e.detail.value == 0) {
@@ -386,6 +400,17 @@ pageObject.unflowerStar = function (e) {
                     usersList: data
                   });
                 });
+                that.getAllWHs(function (data, num) {
+                  that.setData({
+                    numWH: num,
+                    whsList: data
+                  });
+                });
+                that.getEverStars(function (data, num) {
+                  that.setData({
+                    everStars: data
+                  });
+                });
               }
             });
         } else {
@@ -403,6 +428,17 @@ pageObject.unflowerStar = function (e) {
               usersList: data
             });
           });
+          that.getAllWHs(function (data, num) {
+            that.setData({
+              numWH: num,
+              whsList: data
+            });
+          });
+          that.getEverStars(function (data, num) {
+            that.setData({
+              everStars: data
+            });
+          });
           that.getAllStars(function (data) {
             var top3Stars = data.slice(0, 3);
             var otherStars = data.slice(3);
@@ -415,9 +451,24 @@ pageObject.unflowerStar = function (e) {
         }
       }
     });
-
   };
 
+pageObject.getEverStars = function (cal) {
+  if (app.globalData.userInfo != null) {
+    wx.request({
+      url: URL + '/users/getEverStars/' + app.globalData.openid,
+      method: 'GET',
+      header: {
+        'content-type': 'application/json'
+      },
+      success: function (res) {
+        if (typeof cal == 'function') {
+          cal(res.data.data);
+        }
+      }
+    });
+  }
+};
 pageObject.getAllStars = function (cal) {
   if (app.globalData.userInfo!=null) {
     wx.request({
@@ -483,6 +534,131 @@ pageObject.addWH = function (e) {
     url: '../addWH/addWH'
   });
 };
+
+pageObject.whTypeChange = function (e) {
+  this.setData({
+    whTypeIndex: e.detail.value
+  });
+  var that = this;
+  if (e.detail.value == 0) {
+    that.getAllWHs(function (data, num) {
+      that.setData({
+        numWH: num,
+        whsList: data
+      });
+    });
+  } else if (e.detail.value == 1) {
+    that.getMaleWHs(function (data, num) {
+      that.setData({
+        numWH: num,
+        whsList: data
+      });
+    });
+  } else {
+    that.getFemaleWHs(function (data, num) {
+      that.setData({
+        numWH: num,        
+        whsList: data
+      });
+    });
+  }
+};
+
+pageObject.getAllWHs = function (cal) {
+  if (app.globalData.userInfo != null) {
+    wx.request({
+      url: URL + '/wanghong/getAllWHs/' + app.globalData.openid,
+      method: 'GET',
+      header: {
+        'content-type': 'application/json'
+      },
+      success: function (res) {
+        if (typeof cal == 'function') {
+          cal(res.data.data, res.data.num);
+        }
+      }
+    });
+  }
+};
+pageObject.getMaleWHs = function (cal) {
+  wx.request({
+    url: URL + '/wanghong/getMaleWHs/' + app.globalData.openid,
+    method: 'GET',
+    header: {
+      'content-type': 'application/json'
+    },
+    success: function (res) {
+      if (typeof cal == 'function') {
+        cal(res.data.data, res.data.num);
+      }
+    }
+  });
+};
+pageObject.getFemaleWHs = function (cal) {
+  wx.request({
+    url: URL + '/wanghong/getFemaleWHs/' + app.globalData.openid,
+    method: 'GET',
+    header: {
+      'content-type': 'application/json'
+    },
+    success: function (res) {
+      if (typeof cal == 'function') {
+        cal(res.data.data, res.data.num);
+      }
+    }
+  });
+};
+
+pageObject.unflowerWH = function (e) {
+  var that = this;
+  wx.request({
+    url: URL + '/wanghong/unflowerWH',
+    data: {
+      openid: app.globalData.openid,
+      username: app.globalData.userInfo.nickName,
+      whname: e.currentTarget.dataset.name
+    },
+    method: 'POST',
+    header: {
+      'content-type': 'application/json'
+    },
+    success: function (res) {
+      wx.showToast({
+        title: res.data.msg,
+        icon: 'success',
+        duration: 2000
+      });
+      if (res.data.success) {
+        that.pullUpdateFlowerRankList();
+      }
+    }
+  });
+};
+  pageObject.flowerWH = function (e) {
+    var that = this;
+    wx.request({
+      url: URL + '/wanghong/flowerWH',
+      data: {
+        openid: app.globalData.openid,
+        username: app.globalData.userInfo.nickName,
+        whname: e.currentTarget.dataset.name
+      },
+      method: 'POST',
+      header: {
+        'content-type': 'application/json'
+      },
+      success: function (res) {
+        wx.showToast({
+          title: res.data.msg,
+          icon: 'success',
+          duration: 1000
+        });
+        if (res.data.success) {
+          that.pullUpdateFlowerRankList();
+        }
+      }
+    });
+  };
 
 
 Page(pageObject)

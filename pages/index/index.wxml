@@ -43,27 +43,64 @@
 
       <!--最热网红-->
       <swiper-item>
-        <picker bindchange="whTypeChange" value="{{categoryIndex}}" range="{{whCategories}}">
+        <picker bindchange="whTypeChange" value="{{whTypeIndex}}" range="{{whCategories}}">
           <view class="picker">
-            {{whCategories[categoryIndex]}}
+            {{whCategories[whTypeIndex]}}
             <image class="drop_down" src="../images/drop_down.png" />
           </view>
         </picker>
+        <block wx:if="{{numWH > 0}}">
+          <button class="weui-btn" bindtap="addWH" type="warn">添加网红</button>
+        </block>
         <view class="page">
           <view class="page__hd">
             <!-- <view class="page__title">赶快为你感兴趣的网红添加数据吧！</view> -->
-            <view class="page__desc">赶快为你感兴趣的网红添加数据吧！</view>
+            <view wx:if="{{numWH==0}}" class="page__desc">赶快为你感兴趣的网红添加数据吧！</view>
           </view>
           <view class="page__bd page__bd_spacing">
-            <view class="add_star">
+            <view wx:if="{{numWH==0}}" class="add_star">
               <button class="weui-btn" bindtap="addWH" type="warn">添加网红</button>
+            </view>
+            <view wx:else class="main-rank-list">
+              <block wx:for-items="{{whsList}}" wx:for-item="item" wx:key="item">
+                <view class="rank-item">
+                  <block wx:if="{{index == 0}}" class="rank-item">
+                    <text class="rank-item-pos" style="color:#FF4040;">1</text>
+                  </block>
+                  <block wx:elif="{{index == 1}}" class="rank-item">
+                    <text class="rank-item-pos" style="color:#8470FF;">2</text>
+                  </block>
+                  <block wx:elif="{{index == 2}}" class="rank-item">
+                    <text class="rank-item-pos" style="color:#707070;">3</text>
+                  </block>
+                  <block wx:else class="rank-item">
+                    <text class="rank-item-pos">{{index+1}}</text>
+                  </block>
+                  <image class="rank-item-portrait" src="{{item.avatar}}" />
+                  <view class="rank-item-info">
+                    <view wx:if="{{item.openid==openid}}">
+                      <text class="rank-item-info-name" style="color:red;">{{item.whname}}</text>
+                    </view>
+                    <view wx:else>
+                      <text class="rank-item-info-name">{{item.whname}}</text>
+                    </view>
+                    <text class="rank-item-flowernum">{{item.flowernum}}</text>
+                  </view>
+                  <view wx:if="{{item.floweredWHToday==true}}">
+                    <image data-name="{{item.whname}}" bindtap="unflowerWH" class="iflove" src="{{item.floweredWHToday?'../images/love.png':'../images/nolove.png'}}" />
+                  </view>
+                  <view wx:if="{{item.floweredWHToday==false||item.floweredWHToday==undefined}}">
+                    <image data-name="{{item.whname}}" bindtap="flowerWH" class="iflove" src="{{item.floweredWHToday?'../images/love.png':'../images/nolove.png'}}" />
+                  </view>
+                </view>
+              </block>
             </view>
           </view>
         </view>
       </swiper-item>
       <!--头牌明星-->
       <swiper-item>
-        <picker bindchange="starTypeChange" value="{{categoryIndex}}" range="{{starCategories}}">
+        <picker bindchange="starTypeChange" value="{{starTypeIndex}}" range="{{starCategories}}">
           <view class="picker">
             {{starCategories[starTypeIndex]}}
             <image class="drop_down" src="../images/drop_down.png" />
@@ -194,7 +231,7 @@
                 </view>
                 <text class="rank-item-flowernum">{{item.sumContribution}}</text>
               </view>
-                <text class="rank-item-info-title">{{item.title}}</text>        
+              <text class="rank-item-info-title">{{item.title}}</text>
             </view>
           </block>
         </view>
