@@ -9,10 +9,20 @@
     </view>
     
 <view class="section">
-  <input placeholder="网红名" name="newWH_name" bindinput="newWHName" auto-focus/>
+  <input class="input" placeholder="网红名" name="newWH_name" bindinput="newWHName" auto-focus/>
 </view>
     <view class="add_btn">
-      <button class="weui-btn" bindtap="checkExists" type="warn">检测是否存在</button>
+      <button class="weui-btn" bindtap="checkExists" type="warn" disabled='{{hasChecked}}'>检测是否存在</button>
     </view>
   </view>
+<block wx:if="{{possible.length > 0}}">
+<block wx:for-items="{{possible}}" wx:for-item="item" wx:key="item">
+ <image class="item-portrait" src="{{item.avatar}}" />
+</block>
+    <view class="add_btn">
+<text>你想要添加的是Ta吗？</text>
+      <button class="weui-btn" bindtap="create" type="warn">不是，继续添加</button>
+      <button class="weui-btn" bindtap="cancel" type="warn">是，放弃添加</button>      
+    </view>
+</block>
 </view>

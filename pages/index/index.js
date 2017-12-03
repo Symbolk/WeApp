@@ -12,17 +12,17 @@ pageObject.data = {
   otherStars: [],
   starCategories: ["全部", "男明星", "女明星"],
   starTypeIndex: 0,
-  everStars: [],
   // wh data
   whCategories: ["全部", "男网红", "女网红"],
   whTypeIndex: 0,
   whsList: [],
-  numWH: 0, 
+  numWH: 0,
   // user data
-  floweredStars: [], //all ever flowered stars
-  favstarIndex: 0,
-  usersList: [],
-  
+  everStarnames: [],  
+  everStarContris: [],    
+  everStarIndex: 0,
+  supportersList: [],
+
   // current user info
   userInfo: {},
   openid: null,
@@ -37,69 +37,69 @@ pageObject.data = {
   defaultLoadContent: '数据已经全部加载完成.'
 };
 
-  pageObject.onLoad = function () {
-    // wx.showShareMenu({
-    //   withShareTicket: true,
-    //   success: function (res) {
-    //     wx.showToast({
-    //       title: '转发成功',
-    //       icon: 'success',
-    //       duration: 2000
-    //     });
-    //   },
-    //   fail: function (res) {
-    //     wx.showToast({
-    //       title: '转发失败',
-    //       image: '../images/error.png',
-    //       icon: 'success',
-    //       duration: 2000
-    //     });
-    //   }
-    // })
+pageObject.onLoad = function () {
+  // wx.showShareMenu({
+  //   withShareTicket: true,
+  //   success: function (res) {
+  //     wx.showToast({
+  //       title: '转发成功',
+  //       icon: 'success',
+  //       duration: 2000
+  //     });
+  //   },
+  //   fail: function (res) {
+  //     wx.showToast({
+  //       title: '转发失败',
+  //       image: '../images/error.png',
+  //       icon: 'success',
+  //       duration: 2000
+  //     });
+  //   }
+  // })
 
-    // get userinfo
-    if (app.globalData.userInfo) {
+  // get userinfo
+  if (app.globalData.userInfo) {
+    this.setData({
+      userInfo: app.globalData.userInfo,
+      hasUserInfo: true
+    });
+    // this.checkUser(this.data.userInfo);
+  } else if (this.data.canIUse) {
+    // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
+    // 所以此处加入 callback 以防止这种情况
+    app.userInfoReadyCallback = res => {
       this.setData({
-        userInfo: app.globalData.userInfo,
+        userInfo: res.userInfo,
         hasUserInfo: true
       });
       // this.checkUser(this.data.userInfo);
-    } else if (this.data.canIUse) {
-      // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
-      // 所以此处加入 callback 以防止这种情况
-      app.userInfoReadyCallback = res => {
+    }
+  } else {
+    // 在没有 open-type=getUserInfo 版本的兼容处理
+    wx.getUserInfo({
+      success: res => {
+        app.globalData.userInfo = res.userInfo
         this.setData({
           userInfo: res.userInfo,
           hasUserInfo: true
         });
         // this.checkUser(this.data.userInfo);
       }
-    } else {
-      // 在没有 open-type=getUserInfo 版本的兼容处理
-      wx.getUserInfo({
-        success: res => {
-          app.globalData.userInfo = res.userInfo
-          this.setData({
-            userInfo: res.userInfo,
-            hasUserInfo: true
-          });
-          // this.checkUser(this.data.userInfo);
-        }
+    });
+  }
+
+  // get sys info
+  var that = this;
+  // 获取系统信息 
+  wx.getSystemInfo({
+    success: function (res) {
+      that.setData({
+        winWidth: res.windowWidth,
+        winHeight: res.windowHeight
       });
     }
-
-    // get sys info
-    var that = this;
-    // 获取系统信息 
-    wx.getSystemInfo({
-      success: function (res) {
-        that.setData({
-          winWidth: res.windowWidth,
-          winHeight: res.windowHeight
-        });
-      }
-    });
-  if(that.data.openid==null){
+  });
+  if (that.data.openid == null) {
     app.getOpenid(function (openid) {
       that.setData({
         openid: openid
@@ -108,11 +108,11 @@ pageObject.data = {
     });
   }
 
-  };
+};
 // end onLoad
 
 // page actions
-pageObject.onShareAppMessage= function () {
+pageObject.onShareAppMessage = function () {
   return {
     title: '头牌娱乐小程序',
     path: '/pages/index/index',
@@ -140,17 +140,31 @@ pageObject.onShareAppMessage= function () {
   }
 },
 
-// 滑动切换tab 
-pageObject.bindChange = function (e) {
-  var that = this;
-  that.setData({ currentTab: e.detail.current });
-};
+  // 滑动切换tab 
+  pageObject.bindChange = function (e) {
+    var that = this;
+    that.setData({ currentTab: e.detail.current });
+    if(e.detail.current==2){
+      that.getSupporters(function (data) {
+        that.setData({
+          supportersList: data
+        });
+      });
+    }
+  };
 // 点击tab切换 
 pageObject.swichNav = function (e) {
   var that = this;
   if (this.data.currentTab === e.target.dataset.current) {
     return false;
   } else {
+    if (e.detail.current == 2) {
+      that.getSupporters(function (data) {
+        that.setData({
+          supportersList: data
+        });
+      });
+    }
     that.setData({
       currentTab: e.target.dataset.current
     })
@@ -170,11 +184,6 @@ pageObject.pullUpdateFlowerRankList = function () {
       starsList: data,
       top3Stars: top3Stars,
       otherStars: otherStars
-    });
-    that.getAllUsers(function (data) {
-      that.setData({
-        usersList: data
-      });
     });
     that.getAllWHs(function (data, num) {
       that.setData({
@@ -248,21 +257,30 @@ pageObject.getUserInfo = function (e) {
   });
 };
 
-pageObject.getAllUsers=function (cal){
+pageObject.getSupporters = function (cal) {
+  var starname = this.data.everStarnames[this.data.everStarIndex];
   if (app.globalData.userInfo != null) {
     wx.request({
-      url: URL + '/users/getAllUsers/',
+      url: URL + '/stars/getSupporters/' + starname,
       method: 'GET',
       header: {
         'content-type': 'application/json'
       },
-      success: function (res) {    
+      success: function (res) {
         if (typeof cal == 'function') {
           cal(res.data.data);
         }
       }
     });
   }
+};
+
+pageObject.everStarChange = function (e) {
+  this.setData({
+    everStarIndex: e.detail.value
+  });
+  var that = this;
+  // get user's rank with the star
 };
 
 
@@ -359,8 +377,8 @@ pageObject.unflowerStar = function (e) {
   },
 
   pageObject.checkUser = function (userInfo) {
-  var that = this;
-  var oid=that.data.openid;
+    var that = this;
+    var oid = that.data.openid;
     wx.request({
       url: URL + '/users/exists/' + oid,
       method: 'GET',
@@ -395,26 +413,22 @@ pageObject.unflowerStar = function (e) {
                     otherStars: otherStars
                   });
                 });
-                that.getAllUsers(function (data) {
-                  that.setData({
-                    usersList: data
-                  });
-                });
                 that.getAllWHs(function (data, num) {
                   that.setData({
                     numWH: num,
                     whsList: data
                   });
                 });
-                that.getEverStars(function (data, num) {
+                that.getEverStars(function (starnames, contris) {
                   that.setData({
-                    everStars: data
+                    everStarnames: starnames,
+                    everStarContris: contris
                   });
                 });
               }
             });
         } else {
-          
+
           // if yes, nothing
           wx.showToast({
             title: 'Welcome back!',
@@ -423,20 +437,16 @@ pageObject.unflowerStar = function (e) {
           });
           console.log('Welcome back ' + userInfo.nickName);
           // get all stars
-          that.getAllUsers(function (data) {
-            that.setData({
-              usersList: data
-            });
-          });
           that.getAllWHs(function (data, num) {
             that.setData({
               numWH: num,
               whsList: data
             });
           });
-          that.getEverStars(function (data, num) {
+          that.getEverStars(function (starnames, contris) {
             that.setData({
-              everStars: data
+              everStarnames: starnames,
+              everStarContris: contris
             });
           });
           that.getAllStars(function (data) {
@@ -463,14 +473,14 @@ pageObject.getEverStars = function (cal) {
       },
       success: function (res) {
         if (typeof cal == 'function') {
-          cal(res.data.data);
+          cal(res.data.starnames, res.data.contributions);
         }
       }
     });
   }
 };
 pageObject.getAllStars = function (cal) {
-  if (app.globalData.userInfo!=null) {
+  if (app.globalData.userInfo != null) {
     wx.request({
       url: URL + '/stars/getAllStars/' + app.globalData.openid,
       method: 'GET',
@@ -557,7 +567,7 @@ pageObject.whTypeChange = function (e) {
   } else {
     that.getFemaleWHs(function (data, num) {
       that.setData({
-        numWH: num,        
+        numWH: num,
         whsList: data
       });
     });
@@ -634,31 +644,31 @@ pageObject.unflowerWH = function (e) {
     }
   });
 };
-  pageObject.flowerWH = function (e) {
-    var that = this;
-    wx.request({
-      url: URL + '/wanghong/flowerWH',
-      data: {
-        openid: app.globalData.openid,
-        username: app.globalData.userInfo.nickName,
-        whname: e.currentTarget.dataset.name
-      },
-      method: 'POST',
-      header: {
-        'content-type': 'application/json'
-      },
-      success: function (res) {
-        wx.showToast({
-          title: res.data.msg,
-          icon: 'success',
-          duration: 1000
-        });
-        if (res.data.success) {
-          that.pullUpdateFlowerRankList();
-        }
+pageObject.flowerWH = function (e) {
+  var that = this;
+  wx.request({
+    url: URL + '/wanghong/flowerWH',
+    data: {
+      openid: app.globalData.openid,
+      username: app.globalData.userInfo.nickName,
+      whname: e.currentTarget.dataset.name
+    },
+    method: 'POST',
+    header: {
+      'content-type': 'application/json'
+    },
+    success: function (res) {
+      wx.showToast({
+        title: res.data.msg,
+        icon: 'success',
+        duration: 1000
+      });
+      if (res.data.success) {
+        that.pullUpdateFlowerRankList();
       }
-    });
-  };
+    }
+  });
+};
 
 
 Page(pageObject)

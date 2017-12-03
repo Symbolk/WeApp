@@ -1,7 +1,8 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/addWH/addWH",    
+    "pages/addWH/addWH",
+    "pages/whinfo/whinfo",    
     "pages/logs/logs"
   ],
   "window": {

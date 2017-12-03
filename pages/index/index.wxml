@@ -22,14 +22,14 @@
 
         <view>
           <text class="info-text">守护明星:</text>
-          <picker bindchange="favstarChange" value="{{favstarIndex}}" range="{{allFloweredStars}}">
+          <picker bindchange="everStarChange" value="{{everStarIndex}}" range="{{everStarnames}}">
             <view class="picker info-text">
-              {{allFloweredStars[favstarIndex]}}
+              {{everStarnames[everStarIndex]}}
               <image class="drop_down" src="../images/drop_down.png" />
             </view>
           </picker>
         </view>
-        <text class="info-text">贡献值: 600</text>
+        <text class="info-text">贡献值: {{everStarContris[everStarIndex]}}</text>
       </view>
 
     </view>
@@ -207,7 +207,7 @@
       <!--贡献排行-->
       <swiper-item>
         <view class="main-rank-list">
-          <block wx:for-items="{{usersList}}" wx:for-item="item" wx:key="item">
+          <block wx:for-items="{{supportersList}}" wx:for-item="item" wx:key="item">
             <view class="rank-item">
               <block wx:if="{{index == 0}}" class="rank-item">
                 <text class="rank-item-pos" style="color:#FF4040;">1</text>
@@ -229,7 +229,7 @@
                 <view wx:else>
                   <text class="rank-item-info-name">{{item.username}}</text>
                 </view>
-                <text class="rank-item-flowernum">{{item.sumContribution}}</text>
+                <text class="rank-item-flowernum">{{item.contribution}}</text>
               </view>
               <text class="rank-item-info-title">{{item.title}}</text>
             </view>
