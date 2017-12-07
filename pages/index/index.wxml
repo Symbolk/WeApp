@@ -50,7 +50,7 @@
           </view>
         </picker>
         <block wx:if="{{numWH > 0}}">
-          <button class="weui-btn" bindtap="addWH" type="warn">添加网红</button>
+          <button class="add_btn" bindtap="addWH" type="warn">添加网红</button>
         </block>
         <view class="page">
           <view class="page__hd">
@@ -59,7 +59,7 @@
           </view>
           <view class="page__bd page__bd_spacing">
             <view wx:if="{{numWH==0}}" class="add_star">
-              <button class="weui-btn" bindtap="addWH" type="warn">添加网红</button>
+              <button class="add_btn" bindtap="addWH" type="warn">添加网红</button>
             </view>
             <view wx:else class="main-rank-list">
               <block wx:for-items="{{whsList}}" wx:for-item="item" wx:key="item">

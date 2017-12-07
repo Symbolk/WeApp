@@ -14,11 +14,6 @@
   position: relative;
   width: 100%;
   background-color: #fff;
-}
-
-/* flower-list-content */
-
-.flower-list-content {
   border-radius: 28rpx;
 }
 
@@ -165,7 +160,7 @@ page {
   margin-left: 40rpx;
   width: 80rpx;
   height: 80rpx;
-  /* border-radius: 50%; */
+   border-radius: 10rpx; 
   background-color: #1ecfa7;
   border-style: solid;
   border-width: 2rpx;
@@ -379,4 +374,8 @@ page {
   align-items: center;
   position: relative;
   margin-top: 200rpx;
+}
+
+.add_btn{
+    margin: 10rpx 16rpx 10rpx 16rpx;
 }
