@@ -1,7 +1,7 @@
 {
   "pages": [
-    "pages/whinfo/whinfo",    
     "pages/index/index",
+    "pages/whinfo/whinfo",
     "pages/addWH/addWH",
     "pages/logs/logs"
   ],

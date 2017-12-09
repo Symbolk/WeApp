@@ -357,6 +357,7 @@ pageObject.unflowerStar = function (e) {
       data: {
         openid: app.globalData.openid,
         username: app.globalData.userInfo.nickName,
+        avatar: app.globalData.userInfo.avatarUrl,        
         starname: e.currentTarget.dataset.name
       },
       method: 'POST',

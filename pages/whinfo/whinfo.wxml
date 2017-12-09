@@ -9,7 +9,7 @@
       <view class="whInfo">
         <input class="input" placeholder="网红名" name="whname" bindinput="inputName" auto-focus/>
         <radio-group class="radio-group" bindchange="sexChange">
-          <label class="radio" wx:for="{{genders}}">
+          <label class="radio" wx:for="{{genders}}" wx:for-item="item" wx:key="item">
             <radio value="{{item.value}}" checked="{{item.checked}}" />{{item.sex}}
           </label>
         </radio-group>
@@ -40,7 +40,7 @@
         <input class="input_work" placeholder="作品链接1" bindconfirm="inputWork" />
         <image bindtap="addLink" class="addLink_btn" src="../images/addLink.png" />
       </view>
-      <block wx:for="{{workLinks}}">
+      <block wx:for="{{workLinks}}" wx:for-item="item" wx:key="item">
         <view class="work">
           <input class="input_work" placeholder="作品链接{{index+2}}" bindconfirm="inputWork" />
           <image bindtap="addLink" class="addLink_btn" src="../images/addLink.png" />

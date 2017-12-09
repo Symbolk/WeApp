@@ -221,6 +221,7 @@
               <block wx:else class="rank-item">
                 <text class="rank-item-pos">{{index+1}}</text>
               </block>
+
               <image class="rank-item-portrait" src="{{item.avatar}}" />
               <view class="rank-item-info">
                 <view wx:if="{{item.openid==openid}}">

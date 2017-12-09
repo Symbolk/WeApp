@@ -1,8 +1,41 @@
-.log-list {
-  display: flex;
-  flex-direction: column;
-  padding: 40rpx;
+.flower_container {
+  background: #e0565b;
+  padding: 0 16rpx 136rpx 16rpx;
 }
-.log-item {
-  margin: 10rpx;
+.flower-header-bg {
+  position: relative;
+  display: block;
+  width: 750rpx;
+  height: 50rpx;
+}
+
+.flower-list-content {
+  position: relative;
+  width: 100%;
+   height: 100%; 
+  display: flex;
+  flex-direction: column;  
+   text-align: center; 
+   justify-content: center;    
+  background-color: #fff; 
+  border-radius: 28rpx;
+}
+
+.userinfo{
+  
+}
+
+.userinfo-avatar {
+  width: 128rpx;
+  height: 128rpx;
+  margin: 20rpx;
+  border-radius: 50%;
+  border-style: solid;
+  border-width: 8rpx;
+  border-color: #fff;
+  align-self: center;
+}
+
+.msg{
+  color: #C2C2C2;
 }
