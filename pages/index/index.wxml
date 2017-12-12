@@ -15,13 +15,13 @@
 
     <view wx:if="{{hasUserInfo}}" class="userinfo-title">
       <view>
-        <text class="info-text">王者粉丝:</text>
+        <text class="info-text">{{currentTitle}}粉丝</text>
       </view>
       <text class="info-text">{{userInfo.nickName}}</text>
       <!-- <picker bindchange="everStarChange" value="{{everStarIndex}}" range="{{everStarnames}}"> -->
-       <!-- <view>
+      <view>
         <image class="drop_down" src="../images/drop_down.png" />
-      </view>  -->
+      </view>
       <!-- </picker> -->
       <view class="userinfo-favstar">
         <text class="info-favStar">守护明星:</text>
@@ -235,7 +235,12 @@
                 </view>
                 <text class="rank-item-flowernum">{{item.contribution}}</text>
               </view>
-              <text class="rank-item-info-title">{{item.title}}</text>
+              <view wx:if="{{item.openid==openid}}">
+                <text class="rank-item-info-title" style="color:red;">{{item.title}}</text>
+              </view>
+              <view wx:else>
+                <text class="rank-item-info-title">{{item.title}}</text>
+              </view>
             </view>
           </block>
         </view>

@@ -7,12 +7,13 @@
   position: relative;
   display: block;
   width: 750rpx;
-  height: 200rpx;
+  height: 300rpx;
 }
 
 .flower-list-content {
   position: relative;
   width: 100%;
+  height: 100%; 
   background-color: #fff;
   border-radius: 28rpx;
 }

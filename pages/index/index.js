@@ -12,6 +12,8 @@ pageObject.data = {
   otherStars: [],
   starCategories: ["全部", "男明星", "女明星"],
   starTypeIndex: 0,
+  currentTitle:'', // current title for the user&star
+
   // wh data
   whCategories: ["全部", "男网红", "女网红"],
   whTypeIndex: 0,
@@ -146,9 +148,14 @@ pageObject.onShareAppMessage = function () {
     that.setData({ currentTab: e.detail.current });
     if(e.detail.current==2){
       that.getSupporters(function (data) {
-        that.setData({
-          supportersList: data
-        });
+        for(let d of data){
+          if (d.openid == app.globalData.openid){
+            that.setData({
+              currentTitle: d.title,
+              supportersList: data
+            });   
+          }
+        }
       });
     }
   };
@@ -160,9 +167,14 @@ pageObject.swichNav = function (e) {
   } else {
     if (e.detail.current == 2) {
       that.getSupporters(function (data) {
-        that.setData({
-          supportersList: data
-        });
+        for (let d of data) {
+          if (d.openid == app.globalData.openid) {
+            that.setData({
+              currentTitle: d.title,
+              supportersList: data
+            });
+          }
+        }
       });
     }
     that.setData({
