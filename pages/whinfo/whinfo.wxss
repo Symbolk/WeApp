@@ -36,7 +36,7 @@
 }
 
 .title{ 
-  margin-top: 70rpx;
+  margin-top: 10rpx;
 }
 
 .input {

@@ -173,10 +173,6 @@ page {
   flex-flow: column nowrap;
 }
 
-.picker {
-  font-size: 28rpx;
-}
-
 .rank-item-info-name {
   font-size: 25rpx;
   justify-content: center;
@@ -283,9 +279,9 @@ page {
   display: flex;
   flex-direction: row;
   flex-flow: row nowrap;
-  justify-content: center;  
+  justify-content: center;   
   position: relative;
-  margin-top: -80rpx;
+   margin-top: -80rpx; 
 }
 
 .userinfo-avatar {
@@ -311,19 +307,25 @@ page {
 }
 
 .info-text {
-  font-size: 20rpx;
-  color: #FF7F50;
+  font-size: 30rpx;
+  color: #ff4040;
+}
+
+.info-favStar{
+  font-size: 25rpx;
+  color: #ff4040;
 }
 
 
-.userinfo-title, .userinfo-nickname {
-  margin-top: 150rpx;
+.userinfo-title {
+  margin-top: -50rpx;
+  margin-left: 100rpx;
 }
 
 .userinfo-favstar, .userinfo-contribution {
   /* align-self: right; */
-  margin-top: 100rpx;
-  margin-left: 20rpx;
+  margin-top: -140rpx;  
+  margin-left: 400rpx;
 }
 
 .swiper-tab {

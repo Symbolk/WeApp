@@ -5,34 +5,37 @@
   <view class="flower-list-content">
 
     <view class="userinfo">
-      <view class="userinfo-title">
-        <view>
-          <text class="info-text">王者粉丝:</text>
-        </view>
-        <text class="info-text">{{userInfo.nickName}}</text>
-      </view>
       <view class="flex-view-item">
         <button size="mini" type="primary" wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 登陆授权 </button>
         <block wx:else>
           <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" background-size="cover"></image>
         </block>
       </view>
-      <!--信息框-->
-      <view class="userinfo-favstar">
+    </view>
 
-        <view>
-          <text class="info-text">守护明星:</text>
-          <picker bindchange="everStarChange" value="{{everStarIndex}}" range="{{everStarnames}}">
-            <view class="picker info-text">
-              {{everStarnames[everStarIndex]}}
-              <image class="drop_down" src="../images/drop_down.png" />
-            </view>
-          </picker>
-        </view>
+    <view wx:if="{{hasUserInfo}}" class="userinfo-title">
+      <view>
+        <text class="info-text">王者粉丝:</text>
+      </view>
+      <text class="info-text">{{userInfo.nickName}}</text>
+      <!-- <picker bindchange="everStarChange" value="{{everStarIndex}}" range="{{everStarnames}}"> -->
+       <!-- <view>
+        <image class="drop_down" src="../images/drop_down.png" />
+      </view>  -->
+      <!-- </picker> -->
+      <view class="userinfo-favstar">
+        <text class="info-favStar">守护明星:</text>
+        <picker bindchange="everStarChange" value="{{everStarIndex}}" range="{{everStarnames}}">
+          <view>
+            <text class="info-favStar">{{everStarnames[everStarIndex]}}</text>
+            <image class="drop_down" src="../images/drop_down.png" />
+          </view>
+        </picker>
         <text class="info-text">贡献值: {{everStarContris[everStarIndex]}}</text>
       </view>
-
     </view>
+
+
     <!--滑动tab区域-->
     <view class="swiper-tab">
       <view class="swiper-tab-list {{currentTab==0 ? 'on' : ''}}" data-current="0" bindtap="swichNav">最热网红</view>
