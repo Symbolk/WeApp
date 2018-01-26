@@ -3,27 +3,46 @@
   <view class="flower-header-bg" background-size="contain" />
 
   <view class="flower-list-content">
-
-    <view class="userinfo">
-      <view class="flex-view-item">
-        <button size="mini" type="primary" wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 登陆授权 </button>
-        <block wx:else>
-          <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" background-size="cover"></image>
-        </block>
+    <!-- <view class="userinfo"> -->
+    
+      <view class="userinfo">
+        <view class="flex-view-item">    
+        <view wx:if="{{hasUserInfo}}" class="userinfo-title">
+          <view>
+            <text class="info-text">{{currentTitle}}粉丝</text>
+          </view>
+          <text class="info-nickName">{{userInfo.nickName}}</text>
+        </view>
+        </view>
+        <view class="flex-view-item">
+          <button size="mini" type="primary" wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 登陆授权 </button>
+          <block wx:else>
+            <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" background-size="cover"></image>
+          </block>
+        </view>
+        <view class="flex-view-item">
+          <view class="userinfo-favstar">
+            <text class="info-favStar">守护明星:</text>
+            <picker bindchange="everStarChange" value="{{everStarIndex}}" range="{{everStarnames}}">
+              <view>
+                <text class="info-favStar">{{everStarnames[everStarIndex]}}</text>
+                <image class="drop_down" src="../images/drop_down.png" />
+              </view>
+            </picker>
+            <text class="info-text">贡献值: {{everStarContris[everStarIndex]}}</text>
+          </view>
+        </view>
       </view>
-    </view>
+    <!-- </view> -->
 
-    <view wx:if="{{hasUserInfo}}" class="userinfo-title">
-      <view>
-        <text class="info-text">{{currentTitle}}粉丝</text>
-      </view>
-      <text class="info-text">{{userInfo.nickName}}</text>
-      <!-- <picker bindchange="everStarChange" value="{{everStarIndex}}" range="{{everStarnames}}"> -->
-      <view>
+
+    <!-- <picker bindchange="everStarChange" value="{{everStarIndex}}" range="{{everStarnames}}"> -->
+
+    <!-- <view>
         <image class="drop_down" src="../images/drop_down.png" />
-      </view>
-      <!-- </picker> -->
-      <view class="userinfo-favstar">
+      </view> -->
+    <!-- </picker> -->
+    <!-- <view class="userinfo-favstar">
         <text class="info-favStar">守护明星:</text>
         <picker bindchange="everStarChange" value="{{everStarIndex}}" range="{{everStarnames}}">
           <view>
@@ -32,8 +51,8 @@
           </view>
         </picker>
         <text class="info-text">贡献值: {{everStarContris[everStarIndex]}}</text>
-      </view>
-    </view>
+      </view> -->
+    <!-- </view> -->
 
 
     <!--滑动tab区域-->

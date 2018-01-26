@@ -1,6 +1,7 @@
 .flower_container {
-  background: #e0565b;
-  padding: 0 16rpx 136rpx 16rpx;
+  /* background: #e0565b; */
+  background: linear-gradient(#e0565b, #000);
+  padding: 0 16rpx 100rpx 16rpx;
 }
 
 .flower-header-bg {
@@ -13,7 +14,7 @@
 .flower-list-content {
   position: relative;
   width: 100%;
-  height: 100%; 
+  height: 100%;
   background-color: #fff;
   border-radius: 28rpx;
 }
@@ -161,7 +162,7 @@ page {
   margin-left: 40rpx;
   width: 80rpx;
   height: 80rpx;
-   border-radius: 10rpx; 
+  border-radius: 10rpx;
   background-color: #1ecfa7;
   border-style: solid;
   border-width: 2rpx;
@@ -181,7 +182,8 @@ page {
   display: flex;
   flex-flow: column nowrap;
 }
- .rank-item-info-title {
+
+.rank-item-info-title {
   /* height: 32rpx;
   border: none; */
   margin-left: 150rpx;
@@ -190,13 +192,13 @@ page {
   width: 100rpx;
   display: flex;
   flex-flow: column nowrap;
-} 
+}
 
 .rank-item-flowernum {
   font-size: 32rpx;
   height: 28rpx;
-  color: #FF8C00;
-    display: block;
+  color: #ff8c00;
+  display: block;
 }
 
 /* .rank-item-flowernum {
@@ -279,11 +281,23 @@ page {
 .userinfo {
   display: flex;
   flex-direction: row;
-  flex-flow: row nowrap;
-  justify-content: center;   
-  position: relative;
-   margin-top: -80rpx; 
+  /* position: absolute; */
+  justify-content: space-between;
+  margin-top: -80rpx;
 }
+
+/* .userinfo {
+  display: flex;
+  flex-direction: row;
+  /* flex-flow: row nowrap; */
+
+/* justify-content: space-between;    */
+
+/* position: relative; */
+
+/* margin-top: -80rpx;   */
+
+/* } */
 
 .userinfo-avatar {
   width: 128rpx;
@@ -312,26 +326,33 @@ page {
   color: #ff4040;
 }
 
-.info-favStar{
+.info-nickName {
+  font-size: 20rpx;
+  color: #ff4040;
+}
+
+.info-favStar {
   font-size: 25rpx;
   color: #ff4040;
 }
 
-
 .userinfo-title {
-  margin-top: -50rpx;
+  /* display: flex;
+  flex-direction: row wrap;
+  justify-content: flex-end; */
+  margin-top: 120rpx;
   margin-left: 100rpx;
 }
 
 .userinfo-favstar, .userinfo-contribution {
   /* align-self: right; */
-  margin-top: -140rpx;  
-  margin-left: 400rpx;
+  margin-top: 100rpx;
+  margin-right: 100rpx;
 }
 
 .swiper-tab {
   width: 100%;
-  border-bottom: 2rpx solid #000;
+  border-bottom: 5rpx solid #8A8A8A;
   text-align: center;
   line-height: 80rpx;
 }
@@ -340,7 +361,7 @@ page {
   font-size: 25rpx;
   display: inline-block;
   width: 33%;
-  color: #000;
+  color: #8A8A8A;
 }
 
 .on {
@@ -379,6 +400,6 @@ page {
   margin-top: 200rpx;
 }
 
-.add_btn{
-    margin: 10rpx 16rpx 10rpx 16rpx;
+.add_btn {
+  margin: 10rpx 16rpx 10rpx 16rpx;
 }

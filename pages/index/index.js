@@ -436,6 +436,19 @@ pageObject.unflowerStar = function (e) {
                   that.setData({
                     everStarnames: starnames,
                     everStarContris: contris
+                  }, function(){
+                    // console.log('CCCCCCC');
+                    // callback not work
+                    // that.getSupporters(function (data) {
+                    //   for (let d of data) {
+                    //     if (d.openid == app.globalData.openid) {
+                    //       that.setData({
+                    //         currentTitle: d.title,
+                    //         supportersList: data
+                    //       });
+                    //     }
+                    //   }
+                    // });
                   });
                 });
               }
