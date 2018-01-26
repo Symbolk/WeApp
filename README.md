@@ -20,20 +20,20 @@ Tutorial : [Wechat Mini App Offical](https://mp.weixin.qq.com/debug/wxadoc/dev/)
 
 ### Home
 
-![home](https://github.com/Symbolk/WeApp/blob/master/screenshots/home.jpg)
+![home](https://github.com/Symbolk/WeApp/blob/master/screenshots/home.png)
 
 
 ### Add Wanghong(Online Stars in Chinese)
 
-![addwh](https://github.com/Symbolk/WeApp/blob/master/screenshots/addwh.jpg)
+![addwh](https://github.com/Symbolk/WeApp/blob/master/screenshots/addwh.png)
 
 ### Fill in Wanghong Info
 
-![whinfo](https://github.com/Symbolk/WeApp/blob/master/screenshots/whinfo.jpg)
+![whinfo](https://github.com/Symbolk/WeApp/blob/master/screenshots/whinfo.png)
 
 ### Switch Star Type
 
-![switchstar](https://github.com/Symbolk/WeApp/blob/master/screenshots/switchstar.jpg)
+![switchstar](https://github.com/Symbolk/WeApp/blob/master/screenshots/switchstar.png)
 
 
 ## License
