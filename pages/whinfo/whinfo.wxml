@@ -16,7 +16,7 @@
       </view>
     </view>
     <view class="uploadAvatar">
-      <image class="item-portrait" src="{{avatarSrc}}" />
+      <image class="item-portrait" src="{{avatarSrc}}" mode="aspectFill"/>
       <button class="upload_btn" bindtap="upload" type="warn">上传头像</button>
     </view>
 

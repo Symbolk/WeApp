@@ -6,13 +6,21 @@ const URL = "https://xcx.toupaiyule.com";
 
 var pageObject = {};
 pageObject.data = {
+  // page
+  winWidth: 0,
+  winHeight: 0,
+  // tab switch
+  currentTab: 1,
+  // tips info
+  defaultLoadContent: '数据加载完成.',
+
   // star data
   starsList: [],
   top3Stars: [],
   otherStars: [],
   starCategories: ["全部", "男明星", "女明星"],
   starTypeIndex: 0,
-  currentTitle:'', // current title for the user&star
+  currentTitle: '', // current title for the user&star
 
   // wh data
   whCategories: ["全部", "男网红", "女网红"],
@@ -20,8 +28,8 @@ pageObject.data = {
   whsList: [],
   numWH: 0,
   // user data
-  everStarnames: [],  
-  everStarContris: [],    
+  everStarnames: [],
+  everStarContris: [],
   everStarIndex: 0,
   supportersList: [],
 
@@ -30,13 +38,6 @@ pageObject.data = {
   openid: null,
   hasUserInfo: false,
   canIUse: wx.canIUse('button.open-type.getUserInfo'),
-  // page
-  winWidth: 0,
-  winHeight: 0,
-  // tab switch
-  currentTab: 1,
-  // tips info
-  defaultLoadContent: '数据已经全部加载完成.'
 };
 
 pageObject.onLoad = function () {
@@ -146,14 +147,14 @@ pageObject.onShareAppMessage = function () {
   pageObject.bindChange = function (e) {
     var that = this;
     that.setData({ currentTab: e.detail.current });
-    if(e.detail.current==2){
+    if (e.detail.current == 2) {
       that.getSupporters(function (data) {
-        for(let d of data){
-          if (d.openid == app.globalData.openid){
+        for (let d of data) {
+          if (d.openid == app.globalData.openid) {
             that.setData({
               currentTitle: d.title,
               supportersList: data
-            });   
+            });
           }
         }
       });
@@ -182,32 +183,94 @@ pageObject.swichNav = function (e) {
     })
   }
 };
-// 下拉刷新
+// refresh
 pageObject.onPullDownRefresh = function () {
   this.pullUpdateFlowerRankList();
 };
 pageObject.pullUpdateFlowerRankList = function () {
   var that = this;
   wx.showNavigationBarLoading();
-  that.getAllStars(function (data) {
-    var top3Stars = data.slice(0, 3);
-    var otherStars = data.slice(3);
-    that.setData({
-      starsList: data,
-      top3Stars: top3Stars,
-      otherStars: otherStars
-    });
-    that.getAllWHs(function (data, num) {
-      that.setData({
-        numWH: num,
-        whsList: data
+  // refresh star page
+  if (that.data.currentTab == 1) {
+    if (that.data.starTypeIndex == 0) {
+      that.getAllStars(function (data) {
+        var top3Stars = data.slice(0, 3);
+        var otherStars = data.slice(3);
+        that.setData({
+          starsList: data,
+          top3Stars: top3Stars,
+          otherStars: otherStars
+        });
       });
-    });
-    wx.stopPullDownRefresh();
-    setTimeout(function () {
-      wx.hideNavigationBarLoading();
-    }, 1000);
-  });
+    } else if (that.data.starTypeIndex == 1) {
+      that.getMaleStars(function (data) {
+        var top3Stars = data.slice(0, 3);
+        var otherStars = data.slice(3);
+        that.setData({
+          starsList: data,
+          top3Stars: top3Stars,
+          otherStars: otherStars
+        });
+      });
+    } else {
+      that.getFemaleStars(function (data) {
+        var top3Stars = data.slice(0, 3);
+        var otherStars = data.slice(3);
+        that.setData({
+          starsList: data,
+          top3Stars: top3Stars,
+          otherStars: otherStars
+        });
+      });
+    }
+  } else if (that.data.currentTab == 0) {
+    // refresh wanghong page
+    if (that.data.whTypeIndex == 0) {
+      that.getAllWHs(function (data, num) {
+        that.setData({
+          numWH: num,
+          whsList: data
+        });
+      });
+    } else if (that.data.whTypeIndex == 1) {
+      that.getMaleWHs(function (data, num) {
+        that.setData({
+          numWH: num,
+          whsList: data
+        });
+      });
+    } else {
+      that.getFemaleWHs(function (data, num) {
+        that.setData({
+          numWH: num,
+          whsList: data
+        });
+      });
+    }
+  }
+  wx.stopPullDownRefresh();
+  setTimeout(function () {
+    wx.hideNavigationBarLoading();
+  }, 1000);
+  // that.getAllStars(function (data) {
+  //   var top3Stars = data.slice(0, 3);
+  //   var otherStars = data.slice(3);
+  //   that.setData({
+  //     starsList: data,
+  //     top3Stars: top3Stars,
+  //     otherStars: otherStars
+  //   });
+  //   that.getAllWHs(function (data, num) {
+  //     that.setData({
+  //       numWH: num,
+  //       whsList: data
+  //     });
+  //   });
+  //   wx.stopPullDownRefresh();
+  //   setTimeout(function () {
+  //     wx.hideNavigationBarLoading();
+  //   }, 1000);
+  // });
 };
 //上滑加载更多
 // onReachBottom: function (e) {
@@ -369,7 +432,7 @@ pageObject.unflowerStar = function (e) {
       data: {
         openid: app.globalData.openid,
         username: app.globalData.userInfo.nickName,
-        avatar: app.globalData.userInfo.avatarUrl,        
+        avatar: app.globalData.userInfo.avatarUrl,
         starname: e.currentTarget.dataset.name
       },
       method: 'POST',
@@ -436,7 +499,7 @@ pageObject.unflowerStar = function (e) {
                   that.setData({
                     everStarnames: starnames,
                     everStarContris: contris
-                  }, function(){
+                  }, function () {
                     // console.log('CCCCCCC');
                     // callback not work
                     // that.getSupporters(function (data) {
@@ -457,11 +520,11 @@ pageObject.unflowerStar = function (e) {
 
           // if yes, nothing
           wx.showToast({
-            title: 'Welcome back!',
+            title: '欢迎回来!',
             icon: 'success',
             duration: 1000
           });
-          console.log('Welcome back ' + userInfo.nickName);
+          console.log('欢迎回来' + userInfo.nickName);
           // get all stars
           that.getAllWHs(function (data, num) {
             that.setData({

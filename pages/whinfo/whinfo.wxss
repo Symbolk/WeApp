@@ -1,8 +1,9 @@
 /* pages/whinfo/whinfo.wxss */
 
 .flower_container {
-  background: linear-gradient(#e0565b, #000);
-  padding: 0 16rpx 136rpx 16rpx;
+  background-image: url('http://ww3.sinaimg.cn/large/0060lm7Tly1fo3ip2fntcj30bi0kfwgg.jpg');
+  background-repeat: round;
+  padding: 0 20rpx 20rpx 20rpx;
 }
 .flower-header-bg {
   position: relative;

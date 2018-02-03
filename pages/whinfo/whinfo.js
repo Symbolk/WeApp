@@ -10,10 +10,10 @@ Page({
   data: {
     whname: '',
     avatarSrc: '',
-    sex: '',
+    sex: 'female',
     genders: [
-      {sex:"男", value: 'male', checked:'true'},
-      {sex:"女", value: 'female', checked: 'false'}
+      { sex: "男", value: 'male', checked: 'true'},
+      { sex: "女", value: 'female', checked: 'false'}
       ],
     weibo: '',
     baike: '',
