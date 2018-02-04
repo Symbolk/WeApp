@@ -311,6 +311,17 @@ page {
   align-self: center;
 }
 
+.grant-btn {
+  width: 128rpx;
+  height: 128rpx;
+  margin: 20rpx;
+  border-radius: 50%;
+  border-style: solid;
+  border-width: 8rpx;
+  border-color: #fff;
+  align-self: center;
+}
+
 .info-item {
   /* width: 100%; */
   display: flex;
@@ -323,7 +334,7 @@ page {
 }
 
 .info-text {
-  font-size: 30rpx;
+  font-size: 25rpx;
   color: #8B572A;
 }
 

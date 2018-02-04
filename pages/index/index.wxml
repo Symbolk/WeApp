@@ -16,7 +16,7 @@
         </view>
         </view>
         <view class="flex-view-item">
-          <button size="mini" type="primary" wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 登陆授权 </button>
+          <button class="grant-btn" size="mini" type="primary" wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 登陆授权 </button>
           <block wx:else>
             <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" background-size="cover"></image>
           </block>

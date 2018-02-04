@@ -21,6 +21,9 @@ Page({
     works: [],
     workIndex: 0,
   },
+  // formSubmit: function (e) {
+  //   sendercode = e.detil.formId;
+  // },
 
   addLink: function (e) {
     var wl = this.data.workLinks;
@@ -85,15 +88,15 @@ Page({
         },
         success: function (res) {
           console.log(res);
-          if (res.statusCode != 200) {
-            wx.showModal({
-              title: '提示',
-              content: '上传失败',
-              showCancel: false
-            })
-            return;
-          }
           var data = res.data;
+          // if (data.statusCode != '200') {
+          //   wx.showModal({
+          //     title: '提示',
+          //     content: '上传失败',
+          //     showCancel: false
+          //   })
+          //   return;
+          // }
           page.setData({  //上传成功修改显示头像
             avatarSrc: path[0]
           })
@@ -178,7 +181,6 @@ Page({
     });
     }
   },
-
   /**
    * 生命周期函数--监听页面加载
    */

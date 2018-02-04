@@ -248,6 +248,12 @@ pageObject.pullUpdateFlowerRankList = function () {
       });
     }
   }
+  that.getEverStars(function (starnames, contris) {
+    that.setData({
+      everStarnames: starnames,
+      everStarContris: contris
+    });
+  });
   wx.stopPullDownRefresh();
   setTimeout(function () {
     wx.hideNavigationBarLoading();

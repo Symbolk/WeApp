@@ -1,7 +1,7 @@
 <view class="container flower_container">
   <view class="flower-header-bg" background-size="contain" />
   <view class="flower-list-content">
-  <!-- <form bindsubmit="submit"> -->
+  <!-- <form bindsubmit="formSubmit" report-submit> -->
     <view class="WHName">
       <view class="title">
         <text>请输入要添加的网红名</text>
@@ -51,6 +51,6 @@
     <view>
       <button class="submit_btn" formType="submit" bindtap="submit" type="warn">提交审核</button>
     </view>
+  <!-- </form>  -->
   </view>
-  <!-- </form> -->
 </view>
