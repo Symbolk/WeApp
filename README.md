@@ -38,4 +38,6 @@ Tutorial : [Wechat Mini App Offical](https://mp.weixin.qq.com/debug/wxadoc/dev/)
 
 ## License
 
-**RESTRICTED to Private Use ONLY**
+[MIT](http://opensource.org/licenses/MIT)
+
+Copyright (c) 2019-present, Symbolk
